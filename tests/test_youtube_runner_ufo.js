@@ -7,7 +7,7 @@ const start = html.indexOf('function ufoPhase(');
 const end = html.indexOf('\n(()=>{', start);
 assert(start >= 0 && end > start, 'runner timing helpers must remain available as a deterministic block');
 const sandbox = {};
-vm.runInNewContext(`${html.slice(start, end)}\nglobalThis.ufoPhase=ufoPhase;globalThis.ufoEase=ufoEase;globalThis.obstacleTop=obstacleTop;globalThis.runnerHitsObstacle=runnerHitsObstacle;globalThis.nearestUfoCactus=nearestUfoCactus;globalThis.ufoReadyToSpawn=ufoReadyToSpawn;globalThis.ufoPose=ufoPose;globalThis.validRunnerBest=validRunnerBest;globalThis.isNewRunnerBest=isNewRunnerBest;`, sandbox);
+vm.runInNewContext(`${html.slice(start, end)}\nglobalThis.obstacleAimY=obstacleAimY;globalThis.ufoPhase=ufoPhase;globalThis.ufoEase=ufoEase;globalThis.obstacleTop=obstacleTop;globalThis.runnerHitsObstacle=runnerHitsObstacle;globalThis.nearestUfoTarget=nearestUfoTarget;globalThis.ufoReadyToSpawn=ufoReadyToSpawn;globalThis.ufoPose=ufoPose;globalThis.validRunnerBest=validRunnerBest;globalThis.isNewRunnerBest=isNewRunnerBest;`, sandbox);
 
 assert.equal(sandbox.ufoPhase(0), 'enter');
 assert.equal(sandbox.ufoPhase(.999), 'enter');
@@ -20,16 +20,19 @@ assert.equal(sandbox.ufoEase(0), 0);
 assert.equal(sandbox.ufoEase(.5), .5);
 assert.equal(sandbox.ufoEase(1), 1);
 
-const target = sandbox.nearestUfoCactus([
+const target = sandbox.nearestUfoTarget([
   { type: 'cactus', x: 8, w: 18, h: 30 },
   { type: 'rock', x: 80, w: 20, h: 15 },
   { type: 'mosquito', x: 100, w: 20, h: 10, altitude: 35 },
   { type: 'cactus', x: 260, w: 20, h: 25 },
   { type: 'cactus', x: 140, w: 16, h: 32 },
 ], 64);
-assert.equal(target.x, 140, 'UFO targets the nearest cactus ahead of the character');
-assert.equal(sandbox.nearestUfoCactus([{ type: 'cactus', x: 1, w: 20 }], 64), null, 'cacti behind the character are ignored');
-assert.equal(sandbox.nearestUfoCactus([{ type: 'rock', x: 80, w: 20 }], 64), null, 'rocks are excluded from the UFO cactus target');
+assert.equal(target.x, 80, 'UFO targets the nearest obstacle ahead of the character');
+assert.equal(sandbox.nearestUfoTarget([{ type: 'cactus', x: 1, w: 20 }], 64), null, 'cacti behind the character are ignored');
+assert.equal(sandbox.nearestUfoTarget([{ type: 'rock', x: 80, w: 20 }], 64).type, 'rock');
+assert.equal(sandbox.nearestUfoTarget([{type:'mosquito',x:100,w:20}],64).type,'mosquito');
+assert.equal(sandbox.obstacleAimY({type:'mosquito',h:10,altitude:35},200),165);
+assert.equal(sandbox.obstacleAimY({type:'rock',h:20},200),190);
 const mosquito = { type: 'mosquito', x: 50, w: 24, h: 10, altitude: 35 };
 assert.equal(sandbox.obstacleTop(mosquito, 300), 260, 'mosquito flies above the ground at a fixed altitude');
 assert.equal(sandbox.runnerHitsObstacle(mosquito, 300, 300), true, 'a grounded player collides with the mosquito');

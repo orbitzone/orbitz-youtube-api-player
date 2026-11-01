@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 if [ -z "${DISPLAY:-}" ]; then
-    echo "YouTube Wrapper requires X11 or XWayland (DISPLAY is unset)." >&2
+    echo "YouTube API Player requires X11 or XWayland (DISPLAY is unset)." >&2
     exit 1
 fi
 export GDK_BACKEND=x11

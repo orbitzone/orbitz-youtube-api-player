@@ -26,22 +26,23 @@ const node = () => ({
   contains(target) { return this.children?.includes(target) || target === this; },
   querySelectorAll() { return focusables; },
 });
-const ids = ['settings', 'config', 'config-status', 'language', 'key', 'config-close', 'save', 'query', 'search', 'submit', 'discovery', 'screen', 'copy-video-link', 'player-action-status'];
+const ids = ['runner','settings-menu','new-window','open-settings','controls-shortcut','auto-controls','auto-controls-check','always-above','always-above-check','settings', 'config', 'config-status', 'language', 'key', 'config-close', 'save', 'query', 'search', 'submit', 'discovery', 'screen', 'copy-video-link', 'player-action-status'];
 const nodes = new Map(ids.map(id => [id, node()]));
 const focusables = ['config-close', 'language', 'key', 'save', 'credential-link'].map(() => node());
 nodes.get('config').contains = target => focusables.includes(target) || target === nodes.get('config');
 nodes.get('config').querySelectorAll = () => focusables;
 nodes.get('search').contains = target => target === nodes.get('query') || target === nodes.get('submit') || target === nodes.get('search');
 nodes.get('discovery').contains = target => target === nodes.get('discovery') || target?.insideDiscovery === true;
+nodes.get('settings-menu').contains=target=>['open-settings'].some(id=>nodes.get(id)===target);
 nodes.get('config').hidden = true;
 nodes.get('discovery').hidden = true;
 const listeners = {};
 const nativeActions = [];
-const document = { activeElement: nodes.get('settings'), addEventListener(type, handler) { listeners[type] = handler; } };
+const document = {body:{classList:{toggle(){},remove(){}}}, activeElement: nodes.get('settings'), addEventListener(type, handler) { listeners[type] = handler; } };
 let failSave = false;
 const context = vm.createContext({
   document,
-  window: {},
+  window: {addEventListener(){}},
   $: id => nodes.get(id),
   api: async (action, body) => { nativeActions.push({ action, body }); if (failSave && action === 'key') throw Error('Save failed'); return {}; },
   loadRecommendations() {},
@@ -50,7 +51,7 @@ const context = vm.createContext({
   selected: 'abcdefghijk',
   uiLocale: 'pt-BR',
 });
-const start = html.indexOf("$('settings').onclick=()=>openSettings();");
+const start = html.indexOf('// App controls and settings menu.');
 const end = html.indexOf('function renderResults', start);
 vm.runInContext(html.slice(start, end), context);
 let externalClickPrevented = false;
@@ -63,7 +64,7 @@ assert.deepEqual(nativeActions.at(-1), { action: 'open-external', body: { uri: '
 nodes.get('copy-video-link').onclick().then(() => {
 assert.deepEqual(nativeActions.at(-1), { action: 'copy-link', body: { uri: 'https://www.youtube.com/watch?v=abcdefghijk' } }, 'copy action sends only the selected YouTube URL');
 
-nodes.get('settings').onclick();
+nodes.get('settings').onclick();nodes.get('open-settings').onclick();
 assert.equal(nodes.get('config').hidden, false);
 assert.deepEqual(nativeActions.at(-1), { action: 'window-state', body: { state: 'settings' } }, 'opening Settings sends a bounded window-size request');
 assert.equal(document.activeElement, nodes.get('key'), 'opening Settings focuses the API key field');
@@ -76,12 +77,12 @@ listeners.keydown({ key: 'Escape', preventDefault() {} });
 assert.equal(nodes.get('config').hidden, true);
 assert.equal(document.activeElement, nodes.get('settings'), 'closing restores focus to the opener');
 
-nodes.get('settings').onclick();
+nodes.get('settings').onclick();nodes.get('open-settings').onclick();
 nodes.get('save').onclick();
 Promise.resolve().then(() => Promise.resolve()).then(() => {
   assert.equal(nodes.get('config').hidden, true, 'successful key save closes the modal');
   assert.equal(nodes.get('discovery').hidden, false, 'successful key save exposes status/results');
-  nodes.get('settings').onclick();
+  nodes.get('settings').onclick();nodes.get('open-settings').onclick();
   failSave = true;
   return nodes.get('save').onclick();
 }).then(() => {
@@ -93,7 +94,7 @@ Promise.resolve().then(() => Promise.resolve()).then(() => {
 nodes.get('query').handlers.focus();
 assert.equal(nodes.get('discovery').hidden, false, 'search focus opens the dropdown');
 assert.deepEqual(nativeActions.at(-1), { action: 'window-state', body: { state: 'panel' } }, 'opening search sends panel height');
-nodes.get('settings').onclick();
+nodes.get('settings').onclick();nodes.get('open-settings').onclick();
 assert.deepEqual(nativeActions.at(-1), { action: 'window-state', body: { state: 'panel' } }, 'Settings preserves an open search panel height');
 nodes.get('config-close').onclick();
 assert.deepEqual(nativeActions.at(-1), { action: 'window-state', body: { state: 'panel' } }, 'closing Settings restores the search panel target');
@@ -112,7 +113,7 @@ nodes.get('screen').hidden = false;
 nodes.get('discovery').hidden = false;
 listeners.keydown({ key: 'Escape', preventDefault() {} });
 assert.deepEqual(nativeActions.at(-1), { action: 'window-state', body: { state: 'player' } }, 'closing the panel preserves the expanded player layout');
-nodes.get('settings').onclick();
+nodes.get('settings').onclick();nodes.get('open-settings').onclick();
 assert.deepEqual(nativeActions.at(-1), { action: 'window-state', body: { state: 'player' } }, 'Settings preserves an active player height');
 nodes.get('config-close').onclick();
 assert.deepEqual(nativeActions.at(-1), { action: 'window-state', body: { state: 'player' } }, 'closing Settings restores the active player target');

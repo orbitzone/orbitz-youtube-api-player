@@ -8,15 +8,16 @@ const end = html.indexOf('async function loadRecommendations', start);
 assert(start >= 0 && end > start, 'result renderer is present');
 
 const makeElement = tag => ({
-  tag, children: [], append(...nodes) { this.children.push(...nodes); },
+  tag, dataset: {}, setAttribute() {}, children: [], append(...nodes) { this.children.push(...nodes); },
 });
 const results = { children: [], replaceChildren(...nodes) { this.children = nodes; }, append(node) { this.children.push(node); } };
 const discovery = { hidden: false };
 const actions = [];
 const context = vm.createContext({
+  window: {},activeTab:'videos',
   document: { createElement: makeElement },
   $: id => id === 'results' ? results : discovery,
-  uiPrune() {},
+  uiPrune() {}, uiAttr() {}, loadResultLikes() {},
   uiRaw(node, value) { node.textContent = value; },
   closeDiscovery() { discovery.hidden = true; actions.push('close'); },
   play(id, title) { actions.push(['play', id, title]); },

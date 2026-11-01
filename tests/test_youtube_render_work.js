@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const html=fs.readFileSync('app/index.html','utf8');
+const panel={hidden:true,getBoundingClientRect(){throw Error('hidden game must not measure layout')}},screen={hidden:false};
+const sandbox={window:{},panel,$:()=>screen,document:{visibilityState:'visible'},ctx:new Proxy({},{get(){throw Error('hidden canvas must not draw')}}),g:{w:700,h:390,dpr:1},devicePixelRatio:1,Math};
+vm.createContext(sandbox);
+const start=html.indexOf(' function draw(){'),end=html.indexOf(' function tick(now)',start);
+vm.runInContext(html.slice(start,end),sandbox);
+sandbox.draw();sandbox.resize();
+panel.hidden=false;sandbox.draw();sandbox.resize();
+screen.hidden=true;panel.getBoundingClientRect=()=>({width:700,height:390});
+sandbox.resize();assert.equal(sandbox.g.w,700,'unchanged size skips canvas buffer allocation and redraw');
+console.log('OK: invisible runner performs no canvas drawing/layout; unchanged size avoids reallocating its canvas.');

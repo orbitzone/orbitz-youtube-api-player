@@ -1,0 +1,14 @@
+const assert=require('assert');const {createState,step,splitRock,resizeState,wrap,distance,DT}=require('../app/asteroids.js');
+const fresh=()=>{const s=createState();s.started=true;return s};
+let s=createState();assert.equal(s.rocks.length,4);step(s,{thrust:true},.1);assert.equal(s.time,0);
+s=fresh();step(s,{thrust:true},.1);assert(s.ship.vy<0);const speed=Math.hypot(s.ship.vx,s.ship.vy);step(s,{},.1);assert(Math.hypot(s.ship.vx,s.ship.vy)>.9*speed,'inertia retained');
+const angle=s.ship.angle;step(s,{right:true},.1);assert(s.ship.angle>angle);
+s=fresh();s.ship.x=1;s.ship.vx=-100;step(s,{},.05);assert(s.ship.x>s.width-10,'wraps through edge');assert.equal(wrap(-1,900),899);
+assert(distance({x:1,y:0},{x:899,y:0},{width:900,height:540})<3);
+s=fresh();const initial=s.rocks.length;splitRock(s,0);assert.equal(s.rocks.length,initial+1);assert.equal(s.score,20);assert.equal(s.rocks.filter(r=>r.size===2).length,2);
+s=fresh();step(s,{fire:true},DT);assert.equal(s.shots.length,1);step(s,{fire:true},.1);assert.equal(s.shots.length,1);
+s=fresh();s.ship.grace=0;s.rocks=[{...s.rocks[0],x:s.ship.x,y:s.ship.y,vx:0,vy:0}];step(s,{},DT);assert.equal(s.lives,2);assert(s.ship.grace>0);
+s=fresh();s.ship.grace=0;s.lives=1;s.rocks=[{...s.rocks[0],x:s.ship.x,y:s.ship.y,vx:0,vy:0}];step(s,{},DT);assert(s.over);
+s=fresh();s.rocks=[];step(s,{},DT);assert(s.waveWait>0);for(let i=0;i<21;i++)step(s,{},.1);assert.equal(s.level,2);assert.equal(s.rocks.length,5);
+s=fresh();s.score=123;resizeState(s,1800,700);assert.equal(s.ship.x,900);assert.equal(s.score,123);assert.equal(s.lives,3);
+console.log('OK: asteroid inertia, turning, wrapping, splitting, cooldown, lives, waves and resize.');

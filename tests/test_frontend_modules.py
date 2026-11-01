@@ -19,6 +19,10 @@ import runner_score
 
 
 class YouTubeBoundaryTests(unittest.TestCase):
+    def setUp(self):
+        self.profile=tempfile.TemporaryDirectory();self.addCleanup(self.profile.cleanup)
+        override=patch.object(server.local_library,'DATABASE',Path(self.profile.name)/'library.sqlite3');override.start();self.addCleanup(override.stop)
+
     def request(self, action, data=None, origin='http://127.0.0.1:1234', path=None):
         handler = object.__new__(server.make_handler('synthetic-token'))
         raw = json.dumps(data if data is not None else {}).encode()
@@ -30,6 +34,33 @@ class YouTubeBoundaryTests(unittest.TestCase):
         handler.reply = lambda *args: replies.append(args)
         handler.do_POST()
         return replies[-1], handler
+
+    def test_local_library_uses_the_same_origin_boundary(self):
+        with patch.object(server.local_library,'action',return_value={'favorites':[]}) as action:
+            self.assertEqual(self.request('local-state',{},origin='https://example.invalid')[0][0],403)
+            action.assert_not_called()
+            self.assertEqual(self.request('local-state',{})[0],(200,{'favorites':[]}))
+
+    def test_feature_script_requires_the_document_token(self):
+        handler=object.__new__(server.make_handler('synthetic-token'));handler.reply=MagicMock()
+        handler.path='/wrong/features.js';handler.do_GET();self.assertEqual(handler.reply.call_args.args[0],404)
+        handler.path='/synthetic-token/features.js';handler.do_GET()
+        self.assertEqual(handler.reply.call_args.args[0],200)
+        self.assertEqual(handler.reply.call_args.args[2],'text/javascript')
+        self.assertIn(b'featureSaveProgress',handler.reply.call_args.args[1])
+        handler.path='/wrong/maze.js';handler.do_GET();self.assertEqual(handler.reply.call_args.args[0],404)
+        handler.path='/synthetic-token/maze.js';handler.do_GET()
+        self.assertEqual(handler.reply.call_args.args[0],200)
+        self.assertIn(b'createState',handler.reply.call_args.args[1])
+
+    def test_game_audio_requires_token_and_exact_asset_path(self):
+        handler=object.__new__(server.make_handler('synthetic-token'));handler.reply=MagicMock()
+        for path in ('/wrong/audio/laser1.ogg','/synthetic-token/audio/../index.html','/synthetic-token/audio/unknown.ogg'):
+            handler.path=path;handler.do_GET();self.assertEqual(handler.reply.call_args.args[0],404)
+        handler.path='/synthetic-token/audio/laser1.ogg';handler.do_GET()
+        self.assertEqual(handler.reply.call_args.args[0],200)
+        self.assertTrue(handler.reply.call_args.args[1].startswith(b'OggS'))
+        self.assertEqual(handler.reply.call_args.args[2],'audio/ogg')
 
     def test_loopback_origin_and_token_required_before_api(self):
         with patch.object(server, 'search') as search:
@@ -91,6 +122,40 @@ class YouTubeBoundaryTests(unittest.TestCase):
             self.assertEqual(reply, (200, {'items': items}))
             self.assertIn(('music', 'podcasts'), handler.server.cache)
             search.assert_called_once_with('music', 'podcasts')
+
+    def test_successful_search_updates_local_profile_and_recommendations_receive_mode(self):
+        with patch.object(server,'search',return_value=[]):self.request('search',{'query':'jazz','mode':'live'})
+        self.assertEqual(server.local_library.recommendation_profile()['recent'][0]['query'],'jazz')
+        with patch.object(server,'recommendations',return_value={'items':[]}) as recommend:
+            self.assertEqual(self.request('recommendations',{'mode':'shorts'})[0],(200,{'items':[]}))
+            recommend.assert_called_once_with('shorts',server.ui.get_locale())
+
+    def test_search_requests_and_preserves_twenty_results_for_every_filter(self):
+        entries=[{'id':{'videoId':f'{index:011d}'},'snippet':{'title':f'Podcast {index}','channelTitle':'Synthetic'}} for index in range(25)]
+        response=MagicMock();response.read.return_value=json.dumps({'items':entries}).encode();response.__enter__.return_value=response
+        for mode in ('videos','shorts','live','podcasts'):
+            with patch.object(api,'read_key',return_value='synthetic-key'),patch.object(api.urllib.request,'urlopen',return_value=response) as request:
+                for entry in entries:entry['snippet']['liveBroadcastContent']='live' if mode=='live' else 'none'
+                response.read.return_value=json.dumps({'items':entries}).encode()
+                items=api.search('synthetic',mode)
+                params=urllib.parse.parse_qs(urllib.parse.urlsplit(request.call_args.args[0]).query)
+                self.assertEqual(params['maxResults'],['50']);self.assertEqual(len(items),20)
+                self.assertEqual(items[-1]['id'],'00000000019')
+
+    def test_old_recommendation_cache_is_upgraded_once(self):
+        with tempfile.TemporaryDirectory() as directory,patch.dict(api.os.environ,{'XDG_CACHE_HOME':directory}):
+            cache=Path(directory)/'orbitz-youtube-wrapper'/'youtube-suggestions.json';cache.parent.mkdir()
+            cache.write_text(json.dumps({'time':time.time(),'items':[{'id':'abcdefghijk'}]*8}))
+            items=[{'id':f'{index:011d}'} for index in range(20)]
+            with patch.object(api,'search',return_value=items) as search:
+                self.assertEqual(api.recommendations(),items);self.assertEqual(api.recommendations(),items)
+                search.assert_called_once_with()
+            self.assertEqual(json.loads(cache.read_text())['result_limit'],20)
+
+    def test_short_api_response_is_returned_without_fabricating_videos(self):
+        response=MagicMock();response.read.return_value=b'{"items":[]}';response.__enter__.return_value=response
+        with patch.object(api,'read_key',return_value='synthetic-key'),patch.object(api.urllib.request,'urlopen',return_value=response):
+            self.assertEqual(api.search('synthetic'),[])
 
     def test_api_maps_search_modes_to_official_filters(self):
         response = MagicMock()
@@ -160,15 +225,14 @@ class YouTubeBoundaryTests(unittest.TestCase):
                 ui._settings = previous_settings
                 ui.refresh(previous_locale)
 
-    def test_invalid_requests_and_comment_cache(self):
+    def test_invalid_search_and_removed_comments_endpoint(self):
         self.assertEqual(self.request('search', {'query': ''})[0][0], 400)
-        self.assertEqual(self.request('comments', {'video': []})[0][0], 400)
         self.assertEqual(self.request('unknown')[0][0], 404)
-        with patch.object(server, 'comments', return_value={'items': [], 'nextPage': ''}) as comments:
-            reply, handler = self.request('comments', {'video': 'abcdefghijk'})
-            self.assertEqual(reply[0], 200)
-            self.assertIn(('abcdefghijk', ''), handler.server.comment_cache)
-            comments.assert_called_once_with('abcdefghijk', '')
+        with patch.object(api.urllib.request,'urlopen') as network:
+            self.assertEqual(self.request('comments', {'video': 'abcdefghijk'})[0][0], 404)
+            self.assertEqual(self.request('comments', {'video': []})[0][0], 404)
+            network.assert_not_called()
+        self.assertFalse(hasattr(server,'comments'));self.assertFalse(hasattr(api,'comments'))
 
     def test_runner_score_endpoint_reads_and_saves_valid_record(self):
         with patch.object(server, 'read_best_score', return_value=640), patch.object(server, 'save_best_score', return_value=900) as save:
@@ -200,7 +264,7 @@ class YouTubeBoundaryTests(unittest.TestCase):
         handler.do_GET()
         self.assertEqual(replies[-1][0], 200)
         self.assertEqual(replies[-1][2], 'text/html')
-        self.assertIn(b'<title>YouTube Wrapper - By Orbitz</title>', replies[-1][1])
+        self.assertIn(b'<title>YouTube API Player - By Orbitz</title>', replies[-1][1])
 
     def test_local_key_permissions_and_validation(self):
         with tempfile.TemporaryDirectory() as folder, patch.object(api, 'CONFIG', Path(folder) / 'new' / 'youtube.json'), patch.object(api, 'LEGACY_CONFIG', Path(folder) / 'old' / 'youtube.json'):

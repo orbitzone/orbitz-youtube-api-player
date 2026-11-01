@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const source=fs.readFileSync('app/features.js','utf8');
+let focused=0,synced=0,played=0,discovery=false;
+const sandbox={featureCloseMenu(){},featurePanel:{hidden:false},featureReturnFocus:{isConnected:true,focus(){focused++;discovery=true}},syncControls(){synced++},$:()=>({focus(){focused++}}),closeDiscovery(){discovery=false},play(){played++},featureResumeStart:null};
+vm.createContext(sandbox);
+vm.runInContext(source.slice(source.indexOf('function featureClose('),source.indexOf("$('feature-close').onclick")),sandbox);
+vm.runInContext(source.slice(source.indexOf('function featurePlay('),source.indexOf('window.orbitzPeekPaused=')),sandbox);
+sandbox.featurePlay({id:'abcdefghijk',title:'Synthetic'});
+assert.equal(focused,0,'selecting video never restores focus to previous search input');assert.equal(discovery,false);assert.equal(played,1);
+const count=synced;sandbox.featureClose();assert.equal(synced,count,'closing an already closed library causes no UI transaction');
+sandbox.featurePanel.hidden=false;sandbox.featureClose();assert.equal(focused,1,'explicit close still restores focus accessibly');
+console.log('OK: video selection does not refocus/reopen search; redundant modal closes do not generate chrome transitions.');

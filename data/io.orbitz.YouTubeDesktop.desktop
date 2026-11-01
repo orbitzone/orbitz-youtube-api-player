@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=YouTube Wrapper - By Orbitz
-Name[en_US]=YouTube Wrapper - By Orbitz
-Name[pt_BR]=YouTube Wrapper - By Orbitz
+Name=YouTube API Player - By Orbitz
+Name[en_US]=YouTube API Player - By Orbitz
+Name[pt_BR]=YouTube API Player - By Orbitz
 Comment=A compact YouTube search and playback app
 Comment[pt_BR]=Um mini app para buscar e assistir vídeos do YouTube
 Exec=orbitz-youtube-wrapper
@@ -10,3 +10,10 @@ Icon=io.orbitz.YouTubeDesktop
 Terminal=false
 Categories=AudioVideo;Video;
 StartupNotify=true
+
+Actions=new-window;
+
+[Desktop Action new-window]
+Name=New Window
+Name[pt_BR]=Nova janela
+Exec=orbitz-youtube-wrapper --new-window

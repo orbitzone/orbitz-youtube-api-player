@@ -8,7 +8,10 @@
     "--share=ipc",
     "--share=network",
     "--socket=x11",
-    "--socket=pulseaudio"
+    "--socket=pulseaudio",
+    "--device=dri",
+    "--own-name=org.mpris.MediaPlayer2.orbitz_youtube_wrapper",
+    "--own-name=org.mpris.MediaPlayer2.orbitz_youtube_wrapper.*"
   ],
   "modules": [
     {

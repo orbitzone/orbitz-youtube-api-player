@@ -20,8 +20,8 @@ class YouTubeWindowSizingTests(unittest.TestCase):
         self.assertIn('0<length<=4096', source)
         self.assertIn("self.headers.get('Origin')!=origin", source)
         self.assertIn("if not isinstance(data,dict)", source)
-        self.assertIn("server.ui_actions={'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}", widget)
-        self.assertIn('completed.wait(5)', widget)
+        self.assertIn("server.ui_actions={'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'auto-controls':set_auto_controls,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}", widget)
+        self.assertIn('completed.wait(timeout)', widget)
 
     def test_flatpak_manifest_exposes_only_the_required_audio_socket(self):
         manifest = json.loads((ROOT / 'packaging/io.orbitz.YouTubeDesktop.json').read_text())
@@ -30,6 +30,8 @@ class YouTubeWindowSizingTests(unittest.TestCase):
         self.assertIn('--socket=x11', permissions)
         self.assertIn('--share=network', permissions)
         self.assertNotIn('--device=all', permissions)
+        self.assertIn('--device=dri', permissions)
+        self.assertIn('--own-name=org.mpris.MediaPlayer2.orbitz_youtube_wrapper',permissions)
 
     def test_flatpak_icon_has_square_canvas(self):
         icon = ET.parse(YOUTUBE_DIR / 'youtube.svg').getroot()
@@ -116,8 +118,8 @@ class YouTubeWindowSizingTests(unittest.TestCase):
         self.assertIn('id="copy-video-link" type="button" hidden', html)
         self.assertIn('header>button[hidden]{display:none}', html)
         self.assertNotIn('download-video', html)
-        self.assertIn("onStateChange:event=>{$('copy-video-link').hidden=event.data!==1", html)
-        self.assertIn("$('copy-video-link').hidden=true", html)
+        self.assertNotIn("$('copy-video-link').hidden=event.data!==1", html)
+        self.assertIn("$('copy-video-link').hidden=false", html)
         self.assertIn("api('copy-link',{uri:url})", html)
         self.assertIn("re.fullmatch(r'https://www\\.youtube\\.com/watch\\?v=[A-Za-z0-9_-]{11}',uri)", source)
         self.assertIn('clipboard.set_text(value,-1)', source)
@@ -195,7 +197,7 @@ class YouTubeWindowSizingTests(unittest.TestCase):
         self.assertIn('before<2&&u.age>=2', html)
         self.assertIn('g.ufos=g.ufos.filter(u=>u.age<3)', html)
         self.assertIn('ufoReadyToSpawn(g.ufoSpawnTimer,g.ufos.length)', html)
-        self.assertIn('nearestUfoCactus(g.obs,44+62)', html)
+        self.assertIn('nearestUfoTarget(g.obs,44+62)', html)
         self.assertIn('g.ufoLasers.push({x1:pose.x,y1:pose.y+8,x2:tx,y2:ty,age:0})', html)
         self.assertIn('ctx.rotate(p.tilt)', html)
         self.assertIn('ctx.drawImage(ufoSprite,-36,-18)', html)
