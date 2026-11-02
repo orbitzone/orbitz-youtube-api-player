@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync('app/features.js','utf8');
 let focused=0,synced=0,played=0,discovery=false;
-const sandbox={featureCloseMenu(){},featurePanel:{hidden:false},featureReturnFocus:{isConnected:true,focus(){focused++;discovery=true}},syncControls(){synced++},$:()=>({focus(){focused++}}),closeDiscovery(){discovery=false},play(){played++},featureResumeStart:null};
+const sandbox={featureCloseMenu(){},featurePanel:{hidden:false},featureReturnFocus:{isConnected:true,focus(){focused++;discovery=true}},syncChrome(){synced++},$:()=>({focus(){focused++}}),closeDiscovery(){discovery=false},play(){played++},featureResumeStart:null};
 vm.createContext(sandbox);
 vm.runInContext(source.slice(source.indexOf('function featureClose('),source.indexOf("$('feature-close').onclick")),sandbox);
 vm.runInContext(source.slice(source.indexOf('function featurePlay('),source.indexOf('window.orbitzPeekPaused=')),sandbox);

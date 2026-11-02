@@ -1,126 +1,132 @@
-# YouTube API Player
+# YouTube API Player — By Orbitz
 
-### YouTube, em uma janela só. E um pequeno alien para fazer companhia.
+### Seu vídeo no lugar certo do desktop.
 
-Pesquise vídeos, Shorts, transmissões ao vivo e podcasts e assista pelo player oficial do YouTube. Quando não houver vídeo na tela, o Orbitz Runner espera por você: um jogo arcade espacial com um ET, obstáculos, tiros automáticos e recorde local.
+Uma live ao lado do trabalho. Um podcast enquanto você organiza o dia. Um vídeo em uma janela que cabe no seu espaço.
 
-**Leve, direto e independente do GNOME Shell.** Feito por Felipe Santiago / orbitzone como projeto comunitário, sem afiliação com Google ou YouTube.
+O **YouTube API Player** leva a busca e a reprodução do YouTube para um aplicativo de desktop com janela ajustável, biblioteca pessoal e seis jogos no **Orbit Games**. Escolha o conteúdo, posicione o player e deixe os controles saírem de cena quando quiser apenas assistir.
 
-> A versão atual é uma prévia para Linux x86_64. Ela ainda não está no Flathub e não recebe atualizações automáticas.
+**Linux · Flatpak · Português e inglês · Integração com as APIs oficiais do YouTube**
 
-## O que você encontra
+[Conheça a beta](docs/releases/0.2.0-beta.1.md) · [Como instalar](#instale-e-comece-a-assistir) · [Relate um problema](https://github.com/orbitzone/orbitz-youtube-api-player/issues)
 
-- **Busca do YouTube:** vídeos e recomendações recentes em português. A busca usa sua própria chave da YouTube Data API v3.
-- **Shorts e lives:** filtros dedicados para encontrar vídeos curtos e transmissões ao vivo ativas.
-- **Podcasts:** busca orientada a episódios de podcast.
-- **Filtros compactos:** em janelas pequenas, os quatro filtros exibem apenas ícones; os nomes permanecem nos tooltips e na acessibilidade. Em janelas maiores, ícones e nomes aparecem juntos.
-- **Player oficial:** reproduza vídeos incorporados, use tela cheia e copie o link do vídeo selecionado.
-- **Sempre acima:** no menu da engrenagem, ative “Sempre acima das outras janelas” para manter o aplicativo em primeiro plano também após fechar e abrir o aplicativo.
-- **Controles automáticos:** no menu da engrenagem, ative “Ocultar controles automaticamente”. Ao sair da área do vídeo/jogo ou da janela, os controles somem após 2 segundos; ao voltar, reaparecem após meio segundo. Entradas e saídas cancelam o prazo anterior. A opção e seus delays ficam salvos; Ctrl+H fica desabilitado enquanto ela estiver ativa. Menus, busca e configurações mantêm os controles disponíveis.
-- **Só o vídeo:** na tela do jogo ou durante a reprodução, com o modo automático desativado, pressione **Ctrl+H** para ocultar a barra de título, a busca e o rodapé. Pressione **Ctrl+H** novamente para restaurar os controles. A área do jogo ou do vídeo mantém suas dimensões ao alternar; só a área das barras é retirada e restaurada. O mouse não altera esse modo; o menu da engrenagem mostra o atalho e abre **Configurações**.
-- **Orbitz Runner:** um mini game que começa só quando você aperta Espaço ou clica. Pule obstáculos, veja os cactos explodirem e tente superar seu recorde.
-- **Sua janela, do seu jeito:** o aplicativo lembra a última posição e o tamanho da janela ao fechar e os restaura ao abrir. Se um monitor for removido, a janela volta para uma área visível.
-- **Português e inglês:** escolha Português (Brasil) ou English (United States) nas configurações.
-- **Seus dados no seu computador:** chave, preferências, cache e recorde ficam no perfil local do aplicativo; não há sincronização nem telemetria própria.
+> **Beta 0.2.0-beta.1:** pacote local disponível para testes, ainda sem publicação no GitHub ou Flathub. As [notas da versão](docs/releases/0.2.0-beta.1.md) descrevem os recursos e as limitações atuais.
 
-## Instalar no Linux
+## Transforme o player em um widget para o desktop
 
-O pacote disponível é um Flatpak x86_64. É necessário usar X11 ou uma sessão Wayland com XWayland, além de conexão à internet para os serviços do YouTube. O aplicativo usa o runtime GNOME 49 e não exige uma versão específica do GNOME Shell.
+Use uma janela compacta para acompanhar o que interessa enquanto continua usando o computador. Uma transmissão de notícias, sua rádio favorita ou um vídeo de referência pode ficar ao alcance dos olhos, no canto que você escolher.
+
+- **Mantenha à vista:** ative **Sempre acima das outras janelas** no menu da engrenagem.
+- **Encontre o tamanho ideal:** arraste qualquer uma das quatro bordas ou dos quatro cantos. O tamanho mínimo protege a área de uso.
+- **Ajuste com precisão:** pressione **Ctrl+T** para mostrar uma moldura com alças de redimensionamento; use **Esc** ou **Concluir** para encerrar.
+- **Deixe o vídeo em destaque:** ao entrar na área de conteúdo, cabeçalho e rodapé aparecem juntos em uma animação de meio segundo. Eles se recolhem quando você sai do aplicativo ou deixa o mouse parado por cinco segundos.
+- **Aproveite seu espaço:** as faixas recolhidas ficam transparentes, e o conteúdo permanece no mesmo lugar durante a animação.
+
+O resultado é uma experiência de widget usando a própria janela do aplicativo. Posicione, redimensione e mantenha o player sobre suas outras atividades. Você também pode abrir **Nova janela** pelo menu para separar pesquisas e conteúdos.
+
+## Encontre algo que combine com o seu momento
+
+Pesquise **Vídeos**, **Shorts**, **Ao vivo** e **Podcasts** em abas próprias. Os resultados mostram miniatura, título, canal e contagem pública de curtidas quando disponível. Encontrou algo para depois? O botão **+** coloca o vídeo na fila sem interromper o que está tocando.
+
+As recomendações aproveitam os interesses que você informa e suas buscas recentes. Ajuste esses sinais em **Configurações → Recomendações para você**, desative o uso das buscas recentes ou limpe-as quando quiser. O aplicativo não acessa o histórico da sua conta do YouTube.
+
+Os filtros seguem o que a API disponibiliza: a aba Shorts pode incluir outros vídeos curtos, e a busca de podcasts usa termos e critérios de relevância. A disponibilidade dos resultados depende do YouTube.
+
+## Sua biblioteca, pronta para a próxima sessão
+
+Abra o ícone de livros e organize o que vale guardar:
+
+| Recurso | Para usar no dia a dia |
+| --- | --- |
+| **Favoritos** | Guarde os vídeos aos quais você sempre volta. |
+| **Assistir depois** | Separe descobertas para outro momento. |
+| **Fila** | Escolha a sequência, reorganize os itens e deixe o próximo vídeo começar ao terminar o atual. |
+| **Vídeos similares** | Explore novos resultados a partir de um vídeo salvo. |
+| **Importar e exportar** | Leve Favoritos e Assistir depois em um arquivo de biblioteca. |
+
+Na tela inicial, **Keep Watching** mantém o último vídeo ao alcance de um clique. Use **Continue assistindo** para retomar o ponto salvo. Vídeos encerrados ou interrompidos com stop podem voltar ao começo; lives são reabertas no ponto disponível pelo YouTube.
+
+Suas listas, fila e progresso ficam salvos localmente. O arquivo exportado da biblioteca inclui apenas Favoritos e Assistir depois, sem a chave da API.
+
+## Uma pausa com Orbit Games
+
+Entre uma sessão e outra, escolha um dos seis cards da tela inicial:
+
+| Jogo | Sua próxima tentativa |
+| --- | --- |
+| **Orbit Runner** | Pule obstáculos e enfrente ameaças em uma corrida com um alien armado. |
+| **Orbit Maze** | Percorra seis labirintos coloridos, coma fantasmas e colete cerejas para ganhar vidas. |
+| **Orbit Invaders** | Proteja sua nave contra ondas de invasores espaciais. |
+| **Orbit Asteroids** | Pilote, desvie e abra caminho entre asteroides. |
+| **Orbit Breaker** | Acerte os blocos e aproveite os poderes especiais. |
+| **Orbit Lander** | Guie um foguete até a plataforma; use o mouse para direcionar e segure o clique para acionar os motores. |
+
+Os jogos têm recordes locais e volume ajustável. Pressione **Esc** para pausar, use uma tecla de controle para continuar e alterne entre jogos com **Shift+↑ / Shift+↓**. As miniaturas da home são estáticas, sem som ou partida rodando dentro dos cards.
+
+## Conectado ao YouTube pelas APIs oficiais
+
+A integração usa dois recursos do próprio YouTube: a **YouTube Data API v3** para encontrar vídeos e consultar informações públicas, e a **IFrame Player API** para controlar a reprodução no player incorporado oficial. [Conheça a API do player](https://developers.google.com/youtube/iframe_api_reference).
+
+**Você pode começar com um link.** Cole a URL de um vídeo para assistir sem configurar uma chave. Para liberar buscas e recomendações, adicione sua chave pessoal da YouTube Data API v3 nas configurações.
+
+O aplicativo não exige um login adicional por OAuth. As curtidas exibidas são informações públicas; ações na sua conta, como curtir um vídeo em seu nome, não estão disponíveis.
+
+### E os anúncios?
+
+**Nos testes de uso relatados nesta beta, os vídeos foram reproduzidos sem anúncios do YouTube.** Essa experiência pode mudar conforme o vídeo, a região e as decisões da plataforma.
+
+A API não garante reprodução sem publicidade, e o aplicativo não bloqueia nem remove anúncios. O próprio YouTube informa que vídeos incorporados podem exibi-los. Por isso, a ausência observada nesta beta não é uma promessa de funcionamento permanente. [Como funcionam os anúncios em vídeos incorporados](https://support.google.com/youtube/answer/132596?hl=pt-BR).
+
+## Instale e comece a assistir
+
+A beta é destinada a **Linux x86_64**, com **X11 ou Wayland com XWayland**. O pacote usa Flatpak e o runtime GNOME 49; não exige uma versão específica do GNOME Shell.
 
 1. Instale o [Flatpak para sua distribuição](https://flatpak.org/setup/).
-2. Baixe o arquivo `orbitz-youtube-desktop-x86_64.flatpak` na [prévia v0.1.0](https://github.com/orbitzone/orbitz-youtube-wrapper/releases/tag/v0.1.0). O nome do arquivo foi mantido desde a publicação inicial.
-3. No terminal, entre na pasta do download e instale:
+2. Obtenha o pacote local `orbitz-youtube-api-player-0.2.0-beta.1-x86_64.flatpak`. Nesta fase, ele é gerado pelo procedimento de [preparação da beta](docs/releases/README.md); ainda não há download público desta versão.
+3. Na pasta do pacote, execute:
 
 ```sh
 flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-flatpak install --user ./orbitz-youtube-desktop-x86_64.flatpak
+flatpak install --user ./orbitz-youtube-api-player-0.2.0-beta.1-x86_64.flatpak
 flatpak run io.orbitz.YouTubeDesktop
 ```
 
-Depois, você também pode abrir **YouTube API Player** pelo menu de aplicativos. Para atualizar, instale uma versão mais recente quando ela for publicada. O arquivo `SHA256SUMS` da release permite conferir a integridade do download.
+Depois, abra pelo menu de aplicativos do Linux. Cole um link para assistir ou abra a engrenagem para configurar a busca.
 
-## Começar a usar
+**Para pesquisar:** no seu projeto do Google Cloud, habilite a YouTube Data API v3, crie uma chave em [Credenciais](https://console.cloud.google.com/apis/credentials) e cole-a em **Configurações**. As consultas usam a quota da sua chave. Guarde-a com cuidado e não a inclua em capturas ou relatos de problemas.
 
-No menu da engrenagem, abra **Configurações** e cole uma chave pessoal da YouTube Data API v3 para habilitar as buscas. A página de [credenciais do Google Cloud](https://console.cloud.google.com/apis/credentials) permite criar a chave; o projeto também precisa ter a YouTube Data API v3 habilitada e quota disponível.
+As atualizações desta beta são manuais. Ao receber um novo pacote, instale-o pelo Flatpak. O arquivo `SHA256SUMS` permite conferir sua integridade.
 
-A chave é guardada localmente no diretório privado do aplicativo, com permissão restrita. O app também consegue ler uma chave salva por uma instalação anterior do Orbitz YouTube Desktop; ao salvar uma nova, ela fica no local atual do aplicativo. Não compartilhe arquivos de configuração que contenham sua chave.
+## Controles à mão
 
-Para assistir a um vídeo sem configurar a API, cole um link do YouTube na busca. Você também pode iniciar o Orbitz Runner na tela inicial usando **Espaço** ou clicando na área do jogo.
+| Atalho | Ação |
+| --- | --- |
+| **Ctrl+Espaço** | Reproduzir ou pausar o vídeo. |
+| **Ctrl+M** | Ativar ou desativar o som do vídeo. |
+| **Ctrl+Alt+← / →** | Voltar ou avançar dez segundos. |
+| **Ctrl+Alt+N** | Avançar para o próximo vídeo da fila. |
+| **Ctrl+T** | Abrir ou fechar a moldura de redimensionamento. |
+| **F11** | Alternar a tela cheia. |
+| **Esc** | Sair da tela cheia, fechar painéis ou pausar um jogo, conforme o contexto. |
 
-## Biblioteca, fila e continuar assistindo
+As teclas multimídia e os controles de reprodução do Linux também podem controlar o aplicativo, conforme o suporte do ambiente.
 
-O botão **Biblioteca** (ícone de livros), no cabeçalho, abre um painel compacto com **Favoritos**, **Assistir depois** e **Fila**, sem escurecer a reprodução. Use a estrela do vídeo atual para favoritar/desfavoritar; o menu **⋮** reúne Assistir depois e outras ações. Miniaturas, contadores e títulos em até duas linhas mantêm as listas compactas. O botão **+** ao lado de cada resultado adiciona o vídeo à fila sem interromper a reprodução atual.
+## Seus dados ficam com você
 
-Na fila, abra o menu **⋮** de um item para movê-lo ou removê-lo e **Próximo vídeo** para avançar. Ao terminar o vídeo atual, o aplicativo reproduz o próximo item da fila. A fila também é preservada ao fechar; a abertura não inicia reprodução automaticamente.
+O aplicativo guarda preferências, biblioteca, buscas recentes e progresso no perfil local. Não há sincronização nem telemetria própria. A chave é armazenada com permissões restritas e enviada ao Google somente nas solicitações que precisam dela.
 
-Na próxima abertura, **Continuar assistindo** oferece retomar o último vídeo no ponto salvo. O progresso é registrado a cada 15 segundos durante reprodução, ao pausar/trocar de vídeo e ao fechar normalmente. O último vídeo é guardado desde a seleção e sempre é oferecido na próxima abertura, mesmo se foi pausado, interrompido com stop, concluído ou reproduzido por pouco tempo. Vídeos concluídos ou em stop voltam ao início. Lives, rádios e mídia sem posição válida são reabertas sem buscar um ponto antigo; o ponto disponível depende do YouTube. **Agora não** oculta a oferta apenas naquela abertura, sem apagar o último vídeo. A oferta fica protegida da ocultação automática até você escolher continuar ou dispensá-la.
+Ao buscar ou assistir, você se conecta aos serviços do YouTube/Google. A reprodução e seus dados de uso nesses serviços seguem as condições da plataforma. O pacote solicita rede, áudio, X11 e acesso gráfico à GPU, sem acesso geral aos seus arquivos pessoais; importar e exportar usa o seletor de arquivos do sistema.
 
-No rodapé do painel, **Gerenciar → Importar biblioteca / Exportar biblioteca** usam o seletor de arquivos do sistema. O JSON contém apenas Favoritos e Assistir depois; não inclui chave da API, preferências, fila ou progresso. Importar mescla as listas e elimina duplicações por vídeo/lista. São permitidos até 1.000 itens por lista e 200 na fila.
+## Ajude a construir a primeira beta
 
-As preferências **Sempre acima** e **Ocultar controles automaticamente** são lembradas entre aberturas. Em **Configurações**, ajuste os prazos de ocultar/mostrar entre 0,1 e 10 segundos; os valores iniciais são 2 e 0,5 segundo.
+Experimente no seu desktop e conte o que funcionou — e o que atrapalhou. No menu da engrenagem, **Diagnóstico** mostra informações úteis sem exibir sua chave da API. Para [relatar um problema](https://github.com/orbitzone/orbitz-youtube-api-player/issues), informe sua distribuição, versão do app e os passos para reproduzi-lo.
 
-## Atalhos e controles de mídia
+O consumo de CPU durante vídeos ainda está sendo investigado. Os limites de reprodução, anúncios e disponibilidade de conteúdo dependem do YouTube. Consulte as [notas da beta](docs/releases/0.2.0-beta.1.md) e as [medições de desempenho](docs/performance.md) para acompanhar o estado atual.
 
-- **Ctrl+Espaço:** reproduzir/pausar.
-- **Ctrl+Alt+← / Ctrl+Alt+→:** voltar/avançar dez segundos.
-- **Ctrl+Alt+N:** próximo vídeo da fila.
-- **Ctrl+M:** ativar/desativar som.
-- **Ctrl+H:** mostrar/ocultar controles no modo manual.
-- **F11 / Esc:** entrar/sair da tela cheia.
+Para compilar, testar ou contribuir com código, veja o [procedimento de preparação](docs/releases/README.md) e as [evidências de validação](docs/validation.md).
 
-O menu da engrenagem também apresenta **Atalhos de teclado**. A integração MPRIS permite usar as teclas multimídia e os controles de reprodução do ambiente Linux, conforme o suporte/configuração do sistema.
+---
 
-## Diagnóstico
+Desenvolvido por **Felipe Santiago / Orbitz**, como projeto comunitário independente. YouTube e Google são marcas de seus respectivos titulares; o aplicativo não é produzido nem aprovado por essas empresas.
 
-No menu da engrenagem, **Diagnóstico** mostra versões do aplicativo/runtime, acesso gráfico e disponibilidade de decodificadores acelerados. A consulta acontece apenas ao abrir o painel; um decoder disponível não significa que o vídeo atual esteja usando-o. Não exibe sua chave da API.
-
-Preferências, listas, fila e último progresso ficam em `orbitz-youtube-wrapper/library.sqlite3` no diretório XDG de configuração privado do aplicativo. Não há login adicional, sincronização ou histórico completo de navegação.
-
-## Como funcionam os filtros
-
-O YouTube não disponibiliza um filtro oficial de pesquisa para todas essas categorias. Por isso, alguns resultados são aproximações:
-
-- **Shorts:** usa o filtro oficial de vídeos com menos de quatro minutos. Isso pode incluir vídeos que não são classificados pelo YouTube como Shorts.
-- **Ao vivo:** procura transmissões que estejam ativas.
-- **Podcasts:** acrescenta o termo “podcast” à busca; os resultados podem incluir outros tipos de vídeo.
-
-Com a busca vazia, as quatro abas mostram sugestões de até 20 vídeos. Elas combinam os interesses informados em **Configurações → Recomendações para você**, buscas recentes da própria categoria e, quando necessário, buscas de outras abas. Se ainda não houver interesses nem buscas, seus favoritos ajudam a iniciar as sugestões; sem esses sinais, são exibidas sugestões gerais da categoria. O idioma da interface orienta idioma/região das solicitações. Uma consulta digitada só é enviada quando você inicia a busca ou troca de filtro com o termo preenchido. Ao limpar o campo, as sugestões da aba voltam automaticamente. Interesses e temas de até 30 buscas dos últimos 30 dias são guardados localmente; os temas selecionados são enviados à API oficial para obter sugestões. Você pode desativar o uso de buscas recentes e limpá-las nas configurações, mantendo favoritos e interesses. Não há acesso ao histórico da sua conta do YouTube. As sugestões têm cache separado por categoria e perfil: até seis horas, ou cinco minutos para lives/listas vazias, renovado somente ao solicitar sugestões; não há atualização em segundo plano durante o vídeo. Os limites de uso e a quota seguem as regras do Google Cloud para a sua chave.
-
-## Sobre o player e os vídeos
-
-A YouTube Data API encontra vídeos e fornece seus identificadores. A reprodução acontece no player incorporado oficial, carregado pelo YouTube. Anúncios, disponibilidade, restrições, autenticação e reprodução são controlados pelo YouTube e pelos responsáveis pelos vídeos. A chave da API não remove anúncios nem dá acesso ao arquivo de vídeo.
-
-## Privacidade e permissões
-
-O aplicativo não envia telemetria própria nem sincroniza seus dados. Consultas e links são enviados ao YouTube/Google quando você usa esses serviços; a chave configurada é enviada à API oficial nas solicitações de busca. Cache, idioma, chave e recorde do jogo são armazenados localmente no perfil Flatpak do aplicativo.
-
-O pacote solicita rede, X11, áudio e acesso gráfico à GPU (DRI) para reproduzir vídeos com aceleração quando disponível, sem acesso geral aos seus arquivos pessoais. Em Wayland, é necessário XWayland. A posição da janela, tela cheia, áudio e abertura de links externos também dependem do ambiente Linux instalado.
-
-## Compilar a partir do código
-
-Para gerar e instalar uma versão Flatpak localmente, instale Flatpak, `flatpak-builder`, Node.js e configure o remoto Flathub:
-
-```sh
-flatpak-builder --user --install-deps-from=flathub --assumeyes --repo=repo build-dir packaging/io.orbitz.YouTubeDesktop.json
-flatpak build-bundle repo orbitz-youtube-wrapper-x86_64.flatpak io.orbitz.YouTubeDesktop --runtime-repo=https://dl.flathub.org/repo/flathub.flatpakrepo
-```
-
-Para executar diretamente numa sessão X11/XWayland, são necessários Python 3, GTK 3, WebKitGTK 4.1, PyGObject, SQLite e Node.js:
-
-```sh
-python3 app/youtube-wrapper.py
-```
-
-Os testes são executados sem chave real e sem chamadas à API:
-
-```sh
-make test
-```
-
-Consulte [origem e validação](docs/validation.md) para conhecer o histórico do pacote e as verificações disponíveis.
-
-## Licença e independência
-
-O projeto é distribuído sob a licença [GPL-3.0](LICENSE). Ícones dos filtros: Google Material Symbols (Apache-2.0) e Shorts via Simple Icons (CC0-1.0); veja [créditos de terceiros](THIRD_PARTY_NOTICES.md). YouTube e Google são marcas de seus respectivos titulares. Este aplicativo comunitário não é produzido, aprovado nem mantido pelo Google.
-
-Para detalhes das medições de CPU e aceleração gráfica, consulte [desempenho de vídeo](docs/performance.md).
+Código sob [GPL-3.0](LICENSE). Veja também os [créditos e licenças de terceiros](THIRD_PARTY_NOTICES.md).

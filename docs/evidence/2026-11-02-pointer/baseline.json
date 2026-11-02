@@ -1,0 +1,11 @@
+{
+  "interval_s": 3.04,
+  "processes": [
+    {
+      "pid": 132547,
+      "name": "WebKitWebProces",
+      "cpu_percent_one_core": 47.7,
+      "rss_mb": 695.0
+    }
+  ]
+}

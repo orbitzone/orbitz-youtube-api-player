@@ -37,8 +37,27 @@ for(const row of [1,15])for(const direction of [0,2]){
  step(portal,.07);near(portal.player.x,direction===0?0:18);near(portal.player.y,row);
 }
 const reverse=createState();reverse.ghosts=[];reverse.player={x:0,y:1,dir:2,tx:null,ty:null};reverse.wanted=2;step(reverse,.07);requestDirection(reverse,0);step(reverse,.07);near(reverse.player.x,0);
-const fruit=createState();fruit.ghosts=[];fruit.player={x:1,y:3,dir:2,tx:null,ty:null};fruit.wanted=2;fruit.cherryWait=.001;step(fruit,.02);assert(fruit.cherry&&fruit.cherry.remaining<=8);fruit.player={x:9,y:9,dir:3,tx:null,ty:null};fruit.wanted=3;const beforeFruit=fruit.score;step(fruit,.01);assert.equal(fruit.cherry,null);assert(fruit.score>=beforeFruit+100);assert(fruit.soundEvents.includes('maze_cherry'));
+const fruit=createState();fruit.ghosts=[];fruit.player={x:1,y:3,dir:2,tx:null,ty:null};fruit.wanted=2;fruit.cherryWait=.001;step(fruit,.02);assert(fruit.cherry&&fruit.cherry.remaining<=8);fruit.player={x:9,y:9,dir:3,tx:null,ty:null};fruit.wanted=3;fruit.dots.delete('9,9');const beforeFruit=fruit.score,beforeLives=fruit.lives;step(fruit,.01);assert.equal(fruit.cherry,null);assert.equal(fruit.score,beforeFruit);assert.equal(fruit.lives,beforeLives+1);assert(fruit.rewards.some(r=>r.text==='+1 ♥'));assert(fruit.soundEvents.includes('maze_cherry'));
 const expired=createState();expired.ghosts=[];expired.cherry={x:9,y:9,remaining:.001};step(expired,.02);assert.equal(expired.cherry,null);
 const next=createState();next.ghosts=[];next.score=500;next.lives=2;next.dots.clear();step(next,.01);assert(next.won);for(let i=0;i<9;i++)step(next,.25);assert.equal(next.level,2);assert.equal(next.lives,2);assert(next.score>=500);assert(next.dots.size>0);assert(!next.won);assert.notDeepEqual(next.map,MAP);
 for(const level of [1,2,3,10]){const levelState=createState(level),paths=distanceMap(levelState.player,levelState.map);for(const position of levelState.dots.keys())assert(paths.has(position),'level dots reachable '+level)}
 console.log('OK: four portal entrances, smooth traversal/reversal, cherry spawn/expiry/bonus and progressive levels preserving lives and score.');
+
+const {MAPS,THEMES,mazeLayout}=require('../app/maze.js');
+assert.equal(MAPS.length,6);assert.equal(new Set(MAPS.map(m=>m.join(''))).size,6);assert.equal(new Set(THEMES.map(t=>t.edge)).size,6);
+for(let level=1;level<=12;level++){
+ const scene=createState(level),reachable=distanceMap(scene.player,scene.map);
+ assert.equal(scene.map.length,17);assert(scene.map.every(r=>r.length===19));
+ for(const position of scene.dots.keys())assert(reachable.has(position),'all dots reachable on layout '+level);
+ for(const a of [...scene.ghosts,{x:9,y:9}])assert(reachable.has(a.x+','+a.y),'spawns/cherry connected');
+ for(const y of [1,15])for(const x of [0,18])assert(walkable(x,y,scene.map),'four portal exits on every layout');
+ assert.deepEqual(scene.map,MAPS[(level-1)%6]);
+ scene.ghosts=[];scene.dots.clear();scene.lives=2;scene.score=1234;step(scene,.01);for(let i=0;i<9;i++)step(scene,.25);
+ assert.equal(scene.level,level+1);assert.equal(scene.lives,2);assert(scene.score>=1234);
+}
+for(const [width,height] of [[420,320],[1600,450],[800,1000],[1920,1080]]){
+ const l=mazeLayout(width,height);assert(Math.abs(l.tile*19*l.scaleX-width)<.001,'board fills full width');assert(l.oy+l.tile*17<=height,'board fits height');assert(l.actorTile<=width/19&&l.actorTile<=l.tile,'round actors fit corridors');
+}
+console.log('OK: six unique connected maps/colors, all portals and spawns reachable, phase cycling and full-width responsive board.');
+
+const eaten=createState();eaten.power=3;eaten.dots.delete('9,15');eaten.ghosts=[{x:9,y:15,dir:0}];const beforeGhost=eaten.score;step(eaten,.001);assert.equal(eaten.score,beforeGhost+200);assert(eaten.rewards.some(r=>r.text==='+200'));step(eaten,.001);assert.equal(eaten.score,beforeGhost+200,'same ghost not awarded twice');

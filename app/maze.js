@@ -26,11 +26,31 @@ const PORTAL_ROWS=[1,15];
 function normalizeX(x){return(x%19+19)%19}
 function moves(entity,map=MAP){return DIRS.map((d,i)=>{let x=entity.x+d.x,y=entity.y+d.y;if(PORTAL_ROWS.includes(y)&&(x<0||x>=19))x=normalizeX(x);return{x,y,dir:i}}).filter(p=>walkable(p.x,p.y,map))}
 function distanceMap(target,map=MAP){const result=new Map([[key(target.x,target.y),0]]),queue=[target];for(let i=0;i<queue.length;i++){const p=queue[i];for(const next of moves(p,map)){const k=key(next.x,next.y);if(!result.has(k)){result.set(k,result.get(key(p.x,p.y))+1);queue.push(next)}}}return result}
-function levelMap(level){const map=MAP.map(row=>[...row]),variant=(level-1)%3;const cuts=variant===1?[[9,5],[9,11],[7,8],[11,8]]:variant===2?[[5,4],[13,4],[9,2],[9,14]]:[];for(const [x,y] of cuts)map[y][x]='.';return map.map(row=>row.join(''))}
+// Five reproducible layouts, carved once; every corridor belongs to one graph.
+function buildMaze(seed){
+ const grid=Array.from({length:17},()=>Array(19).fill('#'));let random=seed;
+ const next=()=>{random^=random<<13;random^=random>>>17;random^=random<<5;return(random>>>0)/4294967296};
+ const visited=new Set(['1,1']),stack=[{x:1,y:1}];grid[1][1]='.';
+ while(stack.length){const p=stack.at(-1),options=DIRS.map(d=>({x:p.x+d.x*2,y:p.y+d.y*2})).filter(n=>n.x>0&&n.x<18&&n.y>0&&n.y<16&&!visited.has(key(n.x,n.y)));
+  if(!options.length){stack.pop();continue}const n=options[Math.floor(next()*options.length)];grid[(p.y+n.y)/2][(p.x+n.x)/2]='.';grid[n.y][n.x]='.';visited.add(key(n.x,n.y));stack.push(n);
+ }
+ const joins=[];for(let y=1;y<16;y++)for(let x=1;x<18;x++)if(grid[y][x]==='#'&&((y%2===1&&x%2===0)||(x%2===1&&y%2===0)))joins.push({x,y});
+ for(let i=0;i<14&&joins.length;i++){const n=joins.splice(Math.floor(next()*joins.length),1)[0];grid[n.y][n.x]='.'}
+ for(const [x,y] of [[8,7],[9,7],[10,7],[9,9],[9,15]])grid[y][x]='.';
+ for(const y of PORTAL_ROWS){grid[y][0]=' ';grid[y][18]=' ';grid[y][1]='o';grid[y][17]='o'}
+ return grid.map(row=>row.join(''));
+}
+const MAPS=[MAP,...[8131,27183,45137,73129,97367].map(buildMaze)];
+const THEMES=[{wall:'#101c46',edge:'#527ae9'},{wall:'#291745',edge:'#b384ff'},{wall:'#10372c',edge:'#45dca3'},{wall:'#3d2c12',edge:'#ffc45c'},{wall:'#3d1730',edge:'#ff7fbd'},{wall:'#10333e',edge:'#4bd9f0'}];
+function levelMap(level){return MAPS[(Math.max(1,level)-1)%MAPS.length].slice()}
+function mazeLayout(width,height,showHud=true){
+ const top=showHud?42:8,bottom=showHud?42:8,cellY=Math.max(1,(height-top-bottom)/17),cellX=Math.max(1,width/19);
+ return{tile:cellY,scaleX:cellX/cellY,actorTile:Math.min(cellX,cellY),ox:0,oy:top};
+}
 const PLAYER_SPEED=1/.14;
 const FIXED_DT=1/120;
 function actor(x,y,dir){return{x,y,dir,tx:null,ty:null,turns:0}}
-function createState(level=1){const map=levelMap(level),dots=new Map();map.forEach((row,y)=>[...row].forEach((c,x)=>{if(c==='.'||c==='o')dots.set(key(x,y),c)}));dots.delete(key(9,15));return{map,level,levelWait:0,cherry:null,cherryWait:16,dots,player:actor(9,15,2),wanted:2,ghosts:[actor(8,7,0),actor(10,7,2),actor(9,9,3)],soundEvents:[],chomp:0,score:0,lives:3,power:0,grace:1.5,over:false,won:false,time:0,travel:0,dotRevision:0,steps:0}}
+function createState(level=1){const map=levelMap(level),dots=new Map();map.forEach((row,y)=>[...row].forEach((c,x)=>{if(c==='.'||c==='o')dots.set(key(x,y),c)}));dots.delete(key(9,15));return{map,level,levelWait:0,rewards:[],cherry:null,cherryWait:16,dots,player:actor(9,15,2),wanted:2,ghosts:[actor(8,7,0),actor(10,7,2),actor(9,9,3)],soundEvents:[],chomp:0,score:0,lives:3,power:0,grace:1.5,over:false,won:false,time:0,travel:0,dotRevision:0,steps:0}}
 function resetActors(s){s.player=actor(9,15,2);s.wanted=2;s.ghosts=[actor(8,7,0),actor(10,7,2),actor(9,9,3)];s.power=0;s.grace=1.5;s.routeKey=null}
 function centered(entity){return entity.tx==null}
 function requestDirection(s,direction){
@@ -60,7 +80,7 @@ function moveActor(entity,distance,choose,arrive){
 function soundEvent(s,name){if(s.soundEvents.length<16)s.soundEvents.push(name)}
 function collect(s){
  const p=s.player;if(!centered(p))return;
- if(s.cherry&&p.x===s.cherry.x&&p.y===s.cherry.y){s.score+=100*Math.min(s.level,5);s.cherry=null;s.cherryWait=22;soundEvent(s,'maze_cherry')}
+ if(s.cherry&&p.x===s.cherry.x&&p.y===s.cherry.y){s.lives++;s.rewards.push({x:p.x,y:p.y,text:'+1 ♥',age:0,color:'#9df0b2'});s.cherry=null;s.cherryWait=22;soundEvent(s,'maze_cherry')}
  const k=key(p.x,p.y),dot=s.dots.get(k);
  if(dot){s.dots.delete(k);s.dotRevision++;s.score+=dot==='o'?50:10;if(dot==='o'){s.power=Math.max(3,7-(s.level-1)*.45);soundEvent(s,'maze_power')}else{soundEvent(s,s.chomp++%2?'maze_chomp_b':'maze_chomp_a')}}
 }
@@ -68,13 +88,13 @@ function ghostContact(s){
  for(let i=0;i<s.ghosts.length;i++){
   const ghost=s.ghosts[i];
   if(ghost.cooldown>0||Math.hypot(Math.min(normalizeX(ghost.x-s.player.x),normalizeX(s.player.x-ghost.x)),ghost.y-s.player.y)>.62)continue;
-  if(s.power){soundEvent(s,'maze_ghost');s.score+=200;s.ghosts[i]={...actor(9,7,0),cooldown:.8}}
+  if(s.power){soundEvent(s,'maze_ghost');s.score+=200;s.rewards.push({x:ghost.x,y:ghost.y,text:'+200',age:0,color:'#ffe28a'});s.ghosts[i]={...actor(9,7,0),cooldown:.8}}
   else if(!s.grace){soundEvent(s,'maze_death');s.lives--;if(!s.lives)s.over=true;else resetActors(s);return true}
  }
  return false;
 }
 function simulate(s,dt){
- s.time+=dt;
+ s.time+=dt;for(const reward of s.rewards)reward.age+=dt;s.rewards=s.rewards.filter(r=>r.age<1).slice(-8);
  if(s.cherry){s.cherry.remaining-=dt;if(s.cherry.remaining<=0){s.cherry=null;s.cherryWait=22}}
  else{s.cherryWait-=dt;if(s.cherryWait<=0)s.cherry={x:9,y:9,remaining:8}}
 s.power=Math.max(0,s.power-dt);s.grace=Math.max(0,s.grace-dt);s.steps++;
@@ -100,7 +120,7 @@ function step(s,dt=.14){
  let remaining=Math.min(dt,.25);
  while(remaining>1e-9&&!s.over){const slice=Math.min(FIXED_DT,remaining);if(s.won){s.levelWait-=slice;if(s.levelWait<=0)advanceLevel(s)}else simulate(s,slice);remaining-=slice}
 }
-if(typeof module!=='undefined'&&module.exports){module.exports={MAP,walkable,moves,distanceMap,createState,step,requestDirection,PLAYER_SPEED,FIXED_DT,levelMap,PORTAL_ROWS};return}
+if(typeof module!=='undefined'&&module.exports){module.exports={MAP,walkable,moves,distanceMap,createState,step,requestDirection,PLAYER_SPEED,FIXED_DT,levelMap,PORTAL_ROWS,MAPS,THEMES,mazeLayout};return}
 const panel=$('runner'),runnerCanvas=$('runner-canvas'),runnerHelp=$('runner-help');
 const canvas=document.createElement('canvas');canvas.id='maze-canvas';canvas.tabIndex=0;canvas.setAttribute('role','img');canvas.hidden=true;panel.append(canvas);
 const help=document.createElement('div');help.id='maze-help';help.hidden=true;panel.append(help);
@@ -117,14 +137,14 @@ function persistBest(){clearTimeout(recordTimer);recordTimer=0;const score=Math.
 function renderMazeScene(ctx,canvas,state,width,height,dpr,cache,showHud=true){
  ctx.setTransform(dpr,0,0,dpr,0,0);
  const board=state.map||MAP;
- const tile=Math.max(1,Math.min((width-24)/19,(height-(showHud?98:24))/17)),ox=(width-tile*19)/2,oy=showHud?42:12;
+ const {tile,scaleX,actorTile,ox,oy}=mazeLayout(width,height,showHud),theme=THEMES[(state.level-1)%THEMES.length];
  const cacheKey=[width,height,dpr,state.level,state.dotRevision,state.dots.size].join(':');
  if(cacheKey!==cache.key){
   cache.key=cacheKey;cache.image=document.createElement('canvas');cache.image.width=canvas.width;cache.image.height=canvas.height;
-  const bg=cache.image.getContext('2d');bg.setTransform(dpr,0,0,dpr,0,0);bg.fillStyle='#080d18';bg.fillRect(0,0,width,height);bg.translate(ox,oy);
-  bg.fillStyle='#101c46';
+  const bg=cache.image.getContext('2d');bg.setTransform(dpr,0,0,dpr,0,0);bg.fillStyle='#080d18';bg.fillRect(0,0,width,height);bg.translate(ox,oy);bg.scale(scaleX,1);
+  bg.fillStyle=theme.wall;
   for(let y=0;y<board.length;y++)for(let x=0;x<19;x++)if(board[y][x]==='#')bg.fillRect(x*tile,y*tile,tile+.5,tile+.5);
-  bg.strokeStyle='#527ae9';bg.lineWidth=Math.max(1,tile*.065);bg.lineJoin='round';bg.beginPath();
+  bg.strokeStyle=theme.edge;bg.lineWidth=Math.max(1,tile*.065);bg.lineJoin='round';bg.beginPath();
   for(let y=0;y<board.length;y++)for(let x=0;x<19;x++)if(board[y][x]==='#'){
    const l=x*tile,t=y*tile,r=l+tile,b=t+tile;
    if(y===0||walkable(x,y-1,board)){bg.moveTo(l,t);bg.lineTo(r,t)}
@@ -133,23 +153,24 @@ function renderMazeScene(ctx,canvas,state,width,height,dpr,cache,showHud=true){
    if(x===18||walkable(x+1,y,board)){bg.moveTo(r,t);bg.lineTo(r,b)}
   }bg.stroke();
   bg.fillStyle='#f8d7a2';bg.beginPath();
-  for(const [position,type] of state.dots){if(type==='o')continue;const [x,y]=position.split(',').map(Number);bg.moveTo((x+.57)*tile,(y+.5)*tile);bg.arc((x+.5)*tile,(y+.5)*tile,tile*.065,0,Math.PI*2)}bg.fill();
+  for(const [position,type] of state.dots){if(type==='o')continue;const [x,y]=position.split(',').map(Number);bg.moveTo((x+.5)*tile+actorTile*.065/scaleX,(y+.5)*tile);bg.ellipse((x+.5)*tile,(y+.5)*tile,actorTile*.065/scaleX,actorTile*.065,0,0,Math.PI*2)}bg.fill();
  }
- ctx.drawImage(cache.image,0,0,width,height);ctx.save();ctx.translate(ox,oy);ctx.beginPath();ctx.rect(0,0,19*tile,17*tile);ctx.clip();
- for(const [position,type] of state.dots){if(type!=='o')continue;const [x,y]=position.split(',').map(Number);ctx.fillStyle='#ffe4a6';ctx.beginPath();ctx.arc((x+.5)*tile,(y+.5)*tile,tile*(.21+.025*Math.sin(state.time*7)),0,Math.PI*2);ctx.fill()}
- function drawPlayer(p){ctx.save();ctx.translate((p.x+.5)*tile,(p.y+.5)*tile);ctx.rotate(p.dir*Math.PI/2);ctx.fillStyle=state.grace>0?'#ffeaa1':'#ffdc30';ctx.beginPath();ctx.moveTo(0,0);const mouth=.045+.22*(.5+.5*Math.sin(state.travel*7));ctx.arc(0,0,tile*.43,mouth*Math.PI,(2-mouth)*Math.PI);ctx.closePath();ctx.fill();ctx.restore();
+ ctx.drawImage(cache.image,0,0,width,height);ctx.save();ctx.translate(ox,oy);ctx.scale(scaleX,1);ctx.beginPath();ctx.rect(0,0,19*tile,17*tile);ctx.clip();
+ for(const [position,type] of state.dots){if(type!=='o')continue;const [x,y]=position.split(',').map(Number);ctx.fillStyle='#ffe4a6';ctx.beginPath();ctx.ellipse((x+.5)*tile,(y+.5)*tile,actorTile*(.21+.025*Math.sin(state.time*7))/scaleX,actorTile*(.21+.025*Math.sin(state.time*7)),0,0,Math.PI*2);ctx.fill()}
+ function drawPlayer(p){ctx.save();ctx.translate((p.x+.5)*tile,(p.y+.5)*tile);ctx.scale(1/scaleX,1);ctx.rotate(p.dir*Math.PI/2);ctx.fillStyle=state.grace>0?'#ffeaa1':'#ffdc30';ctx.beginPath();ctx.moveTo(0,0);const mouth=.045+.22*(.5+.5*Math.sin(state.travel*7));ctx.arc(0,0,actorTile*.43,mouth*Math.PI,(2-mouth)*Math.PI);ctx.closePath();ctx.fill();ctx.restore();
 }
  for(const dx of [0,...(state.player.x<0?[19]:[]),...(state.player.x>18?[-19]:[])])drawPlayer({...state.player,x:state.player.x+dx});
  function drawGhost(g,i){
-  const x=(g.x+.5)*tile,y=(g.y+.5)*tile,r=tile*.4,frightened=state.power>0;
+  ctx.save();ctx.translate((g.x+.5)*tile,(g.y+.5)*tile);ctx.scale(1/scaleX,1);const x=0,y=0,r=actorTile*.4,frightened=state.power>0;
   ctx.fillStyle=frightened?(state.power<2&&Math.sin(state.time*18)>0?'#dce6ff':'#527cf2'):['#ff6689','#65e6de','#ffbd69'][i];
   ctx.beginPath();ctx.arc(x,y,r,Math.PI,0);ctx.lineTo(x+r,y+r*.85);
   for(let j=4;j>=0;j--){const foot=(j%2===0?1:.66)+Math.sin(state.time*14+j+i)*.07;ctx.lineTo(x-r+j*r/2,y+r*foot)}ctx.closePath();ctx.fill();
   ctx.fillStyle='#fff';ctx.beginPath();ctx.ellipse(x-r*.35,y-r*.04,r*.25,r*.31,0,0,Math.PI*2);ctx.ellipse(x+r*.35,y-r*.04,r*.25,r*.31,0,0,Math.PI*2);ctx.fill();
-  const gaze=DIRS[g.dir];ctx.fillStyle='#14234c';ctx.beginPath();ctx.arc(x-r*.35+gaze.x*r*.1,y-r*.04+gaze.y*r*.14,r*.12,0,Math.PI*2);ctx.arc(x+r*.35+gaze.x*r*.1,y-r*.04+gaze.y*r*.14,r*.12,0,Math.PI*2);ctx.fill();
+  const gaze=DIRS[g.dir];ctx.fillStyle='#14234c';ctx.beginPath();ctx.arc(x-r*.35+gaze.x*r*.1,y-r*.04+gaze.y*r*.14,r*.12,0,Math.PI*2);ctx.arc(x+r*.35+gaze.x*r*.1,y-r*.04+gaze.y*r*.14,r*.12,0,Math.PI*2);ctx.fill();ctx.restore();
  }
  state.ghosts.forEach((g,i)=>{drawGhost(g,i);if(g.x<0)drawGhost({...g,x:g.x+19},i);if(g.x>18)drawGhost({...g,x:g.x-19},i)});
- if(state.cherry){const c=state.cherry,x=(c.x+.5)*tile,y=(c.y+.5)*tile;ctx.strokeStyle='#71bc74';ctx.lineWidth=Math.max(1,tile*.07);ctx.beginPath();ctx.moveTo(x-tile*.15,y);ctx.quadraticCurveTo(x-tile*.1,y-tile*.5,x+tile*.22,y-tile*.4);ctx.lineTo(x+tile*.15,y);ctx.stroke();ctx.fillStyle='#f34c6c';ctx.beginPath();ctx.arc(x-tile*.16,y+tile*.12,tile*.19,0,Math.PI*2);ctx.arc(x+tile*.16,y+tile*.12,tile*.19,0,Math.PI*2);ctx.fill()}ctx.restore();
+ if(state.cherry){const c=state.cherry;ctx.save();ctx.translate((c.x+.5)*tile,(c.y+.5)*tile);ctx.scale(1/scaleX,1);const x=0,y=0;ctx.strokeStyle='#71bc74';ctx.lineWidth=Math.max(1,tile*.07);ctx.beginPath();ctx.moveTo(x-tile*.15,y);ctx.quadraticCurveTo(x-tile*.1,y-tile*.5,x+tile*.22,y-tile*.4);ctx.lineTo(x+tile*.15,y);ctx.stroke();ctx.fillStyle='#f34c6c';ctx.beginPath();ctx.arc(x-tile*.16,y+tile*.12,tile*.19,0,Math.PI*2);ctx.arc(x+tile*.16,y+tile*.12,tile*.19,0,Math.PI*2);ctx.fill();ctx.restore()}ctx.restore();
+ if(showHud)for(const reward of state.rewards){ctx.save();ctx.globalAlpha=1-reward.age;ctx.fillStyle=reward.color;ctx.font='bold 14px system-ui';ctx.textAlign='center';ctx.fillText(reward.text,ox+(reward.x+.5)*tile*scaleX,oy+(reward.y+.5)*tile-actorTile*.6-reward.age*24);ctx.restore()}
  if(showHud){
  ctx.fillStyle='#eaf3ff';ctx.font='bold 13px system-ui';ctx.textAlign='right';ctx.fillText(uiTr('youtube.maze_score',{score:state.score,lives:state.lives,level:state.level,best:Math.max(best,state.score)}),width-12,26);
  if(!playing||state.over||state.won){ctx.fillStyle='#080d18dd';ctx.fillRect(0,height/2-26,width,52);ctx.fillStyle='#ffe28a';ctx.textAlign='center';ctx.font='bold 14px system-ui';ctx.fillText(uiTr(state.won?'youtube.maze_win':state.over?'youtube.maze_over':'youtube.maze_start'),width/2,height/2+5)}

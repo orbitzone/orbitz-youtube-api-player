@@ -1,17 +1,18 @@
 <!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>YouTube API Player - By Orbitz</title>
 <style>*{box-sizing:border-box}body{margin:0;background:#171b20;color:#eee;font:14px system-ui}header{display:flex;align-items:center;gap:10px;padding:12px 14px}#home-logo{flex:0 0 28px;width:28px;height:22px;padding:0;border:0;background:transparent}#home-logo svg{width:28px;height:22px;stroke:none}b{flex-shrink:0}.app-brand{display:flex;flex-direction:column;justify-content:center;line-height:1.15}.app-brand small{font-family:Arial,Helvetica,sans-serif;font-size:9px;font-weight:400;color:#aebdcd;margin-top:2px}header #search{display:flex;flex:1;min-width:100px;gap:6px;padding:0}header #search input{min-width:0;flex:1}header #search button{flex-shrink:0}button,input,select{font:inherit;border:1px solid #46515d;border-radius:7px;background:#252d36;color:#eee;padding:9px}#config select{appearance:none;-webkit-appearance:none;color-scheme:dark;opacity:1;padding-right:34px;background-color:#252d36;color:#eee;background-image:linear-gradient(45deg,transparent 50%,#dce2e8 50%),linear-gradient(135deg,#dce2e8 50%,transparent 50%);background-position:calc(100% - 17px) 50%,calc(100% - 12px) 50%;background-size:5px 5px,5px 5px;background-repeat:no-repeat}#config select option{background-color:#252d36;color:#eee}button{cursor:pointer}button:focus,input:focus,select:focus{outline:2px solid #77bff0}#screen{aspect-ratio:16/9;background:#090b0e;display:grid;place-items:center;color:#aeb9c5;text-align:center;padding:12px}iframe{width:100%;height:100%;border:0}#screen:has(iframe){padding:0}form{display:flex;gap:7px}input{min-width:0;flex:1}#status{font-size:12px;color:#b0bdcb;margin:6px 14px}#results{margin:0 14px;max-height:190px;overflow:auto}#results button{width:100%;text-align:left;display:flex;gap:10px;margin-bottom:6px;padding:7px}img{width:82px;object-fit:cover;border-radius:4px}.caption{overflow:hidden}.caption strong{display:inline;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.caption small{color:#b0bdcb}a{color:#8ecbff}footer{padding:6px 14px;font-size:12px;line-height:14px}#config input,#config select{width:100%;margin:8px 0}#config p{color:#b0bdcb;font-size:12px}#config.modal-overlay{position:fixed;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;padding:24px;background:#0009}#config.modal-overlay[hidden]{display:none}.modal-card{width:min(560px,100%);max-height:calc(100vh - 48px);display:flex;flex-direction:column;background:#20252b;border:1px solid #46515d;border-radius:12px;box-shadow:0 12px 40px #0009}.modal-head{display:flex;align-items:center;gap:12px;padding:14px 18px;border-bottom:1px solid #46515d}.modal-head h2{font-size:18px;margin:0;flex:1}.modal-head button{padding:4px 10px}.modal-body{overflow-y:auto;padding:8px 18px 18px}#discovery{position:fixed;inset:62px 8px 42px;z-index:5;display:flex;flex-direction:column;min-height:0;padding:8px;background:#171b20;border:1px solid #46515d;border-radius:10px;box-shadow:0 8px 28px #0009}#discovery[hidden]{display:none}html{height:100%}body{min-height:0;height:100%;display:flex;flex-direction:column;overflow:hidden}header,form,#status,footer{flex-shrink:0}#screen{aspect-ratio:auto;flex:1;min-height:0;height:auto}#screen iframe{height:100%}#results{flex:1;min-height:80px;max-height:none;overflow-y:auto}#results button{align-items:center;min-height:80px}#results img{width:112px}footer{display:flex;align-items:center;gap:14px;justify-content:space-between;margin:0;flex:0 0 auto}footer>a,footer>small{display:inline-flex;align-items:center;height:14px;line-height:14px}#external[hidden]{display:inline;visibility:hidden;pointer-events:none}small.hint{color:#aeb9c5;margin-left:auto}@media(max-height:600px){#results{min-height:50px}}#screen[hidden]{display:none}#content{display:flex;flex:1;min-height:0;margin:0 14px;gap:10px}#results{margin:0;min-width:0}#results[hidden],#status[hidden],#discovery[hidden]{display:none}#view-tabs{display:flex;flex-direction:column;gap:6px;flex-shrink:0;width:112px}#view-tabs button{padding:9px 5px;font-size:12px}#view-tabs button[aria-selected="true"]{background:#384d63;border-color:#8ecbff}@media(max-width:500px){header{gap:6px;padding:9px}header svg{flex-shrink:0}header b{display:none}#discovery{inset:54px 5px 40px;padding:6px}}
-.settings-anchor{position:relative;flex-shrink:0}#settings-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;width:min(290px,calc(100vw - 28px));padding:6px;background:#20252b;border:1px solid #46515d;border-radius:9px;box-shadow:0 8px 28px #0008}#settings-menu[hidden]{display:none}#settings-menu button{display:flex;align-items:center;gap:8px;text-align:left;width:100%;border:0;background:transparent}#settings-menu button:hover{background:#343e49}#controls-shortcut{padding:9px;color:#b0bdcb;display:flex;justify-content:space-between;gap:12px}#controls-shortcut kbd{white-space:nowrap}#controls-shortcut[aria-disabled="true"]{opacity:.45}body.controls-hidden{height:100vh;overflow:hidden}body.controls-hidden>header,body.controls-hidden>footer{display:none}body.controls-hidden>#screen{min-height:0;aspect-ratio:auto}body.controls-hidden>#runner{margin:0;flex:1;min-height:0}
+.settings-anchor{position:relative;flex-shrink:0}#settings-menu{position:absolute;right:0;top:calc(100% + 8px);z-index:30;width:min(290px,calc(100vw - 28px));padding:6px;background:#20252b;border:1px solid #46515d;border-radius:9px;box-shadow:0 8px 28px #0008}#settings-menu[hidden]{display:none}#settings-menu button{display:flex;align-items:center;gap:8px;text-align:left;width:100%;border:0;background:transparent}#settings-menu button:hover{background:#343e49}
 
 #view-tabs{min-height:0;overflow-y:auto;padding:2px}#view-tabs button{display:flex;align-items:center;justify-content:center;gap:7px;min-height:40px;flex-shrink:0}.filter-icon{display:block;width:24px;height:24px;flex-shrink:0;fill:currentColor}.filter-label{white-space:nowrap}@media(max-width:640px){#view-tabs{width:44px;gap:4px}#view-tabs button{width:40px;height:32px;min-height:32px;padding:3px}.filter-label{display:none}#content{margin:0 4px;gap:6px}}
-#results .caption{flex:1;min-width:0;white-space:normal}#results .video-likes{display:flex;flex:0 0 auto;flex-direction:column;align-items:center;justify-content:center;align-self:center;min-width:52px;margin-left:auto;font-size:12px;font-weight:400;color:#c4cdd8;line-height:1.3;font-variant-numeric:tabular-nums}#results .video-likes-heart{color:inherit;font-size:26px;line-height:1;display:block;margin-bottom:4px}#results .video-likes-count{display:block}</style>
+#results .caption{flex:1;min-width:0;white-space:normal}#results .video-likes{display:flex;flex:0 0 auto;flex-direction:column;align-items:center;justify-content:center;align-self:center;min-width:40px;margin-left:6px;font-size:11px;font-weight:400;color:#c4cdd8;line-height:1.3;font-variant-numeric:tabular-nums}#results .video-likes-heart{color:inherit;font-size:20px;line-height:1;display:block;margin-bottom:2px}#results .video-likes-count{display:block}</style>
 <style>header>button{display:inline-flex;align-items:center;justify-content:center}header>button[hidden]{display:none}header>#copy-video-link[hidden]{display:inline-flex;visibility:hidden;pointer-events:none}header>button svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}</style>
 <style>#runner{position:relative;display:flex;flex:1;min-height:220px;margin:0 14px 8px;overflow:hidden;border:1px solid #506076;border-radius:10px;background:transparent;color:#eaf3ff}#runner[hidden]{display:none}#runner-canvas{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;outline:none}#runner-help{position:absolute;left:14px;bottom:10px;color:#dceaff;text-shadow:0 1px 4px #080d18;font-size:12px;pointer-events:none}#runner-brand{position:absolute;right:14px;bottom:10px;color:#dceaff;text-shadow:none;font-size:12px;text-decoration:none}#runner-brand:hover,#runner-brand:focus-visible{text-decoration:none;color:#fff}</style>
-<header><button id="home-logo" type="button" data-i18n-aria-label="youtube.home" data-i18n-title="youtube.home"><svg aria-hidden="true" focusable="false" width="28" height="22" viewBox="0 0 28 22"><rect width="28" height="22" rx="6" fill="#ff0033"/><path d="M11 6l9 5-9 5" fill="white"/></svg></button><b class="app-brand" title="YouTube API Player - By Orbitz"><span>API Player</span><small>By Orbitz</small></b><form id="search"><input id="query" placeholder="" data-i18n-placeholder="youtube.query" aria-label="" data-i18n-aria-label="youtube.query" aria-controls="discovery" aria-expanded="false" maxlength="300"><button id="submit"><span data-i18n="youtube.search"></span></button></form><span id="player-action-status" class="sr-only" role="status" aria-live="polite"></span><button id="copy-video-link" type="button" hidden aria-label="" data-i18n-aria-label="youtube.copy_video_link" title="" data-i18n-title="youtube.copy_video_link"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M7 6V3h10v11h-3M3 7h10v10H3z"/></svg></button><div class="settings-anchor"><button id="settings" type="button" aria-label="" data-i18n-aria-label="youtube.app_menu" aria-haspopup="menu" aria-controls="settings-menu" aria-expanded="false">⚙</button><div id="settings-menu" role="menu" hidden><button id="new-window" type="button" role="menuitem"><span data-i18n="youtube.new_window"></span></button><button id="open-settings" type="button" role="menuitem"><span data-i18n="youtube.settings_menu"></span></button><button id="always-above" type="button" role="menuitemcheckbox" aria-checked="false"><span data-i18n="youtube.always_above"></span><span id="always-above-check" aria-hidden="true">○</span></button><button id="auto-controls" type="button" role="menuitemcheckbox" aria-checked="false"><span data-i18n="youtube.auto_controls"></span><span id="auto-controls-check" aria-hidden="true">○</span></button><button id="fit-player" type="button" role="menuitem" onclick="closeSettingsMenu();window.orbitzFitPlayer()"><span data-i18n="youtube.fit_player"></span><kbd>Ctrl+T</kbd></button><div id="controls-shortcut" role="presentation"><span data-i18n="youtube.toggle_controls"></span> <kbd>Ctrl+H</kbd></div></div></div></header>
+<div id="header-clip"><div id="app-header"><div id="window-bar"><span id="window-title" data-i18n="youtube.window_title"></span><div class="window-buttons"><button type="button" data-window-command="minimize" data-i18n-aria-label="youtube.window_minimize" data-i18n-title="youtube.window_minimize"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button><button type="button" id="window-maximize" data-window-command="maximize" data-i18n-aria-label="youtube.window_maximize" data-i18n-title="youtube.window_maximize"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10"/></svg></button><button type="button" class="window-close" data-window-command="close" data-i18n-aria-label="youtube.window_close" data-i18n-title="youtube.window_close"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="m4 4 8 8m0-8-8 8"/></svg></button></div></div>
+<header><button id="home-logo" type="button" data-i18n-aria-label="youtube.home" data-i18n-title="youtube.home"><svg aria-hidden="true" focusable="false" width="28" height="22" viewBox="0 0 28 22"><rect width="28" height="22" rx="6" fill="#ff0033"/><path d="M11 6l9 5-9 5" fill="white"/></svg></button><b class="app-brand" title="YouTube API Player - By Orbitz"><span>API Player</span><small>By Orbitz</small></b><form id="search"><input id="query" placeholder="" data-i18n-placeholder="youtube.query" aria-label="" data-i18n-aria-label="youtube.query" aria-controls="discovery" aria-expanded="false" maxlength="300"><button id="submit"><span data-i18n="youtube.search"></span></button></form><span id="player-action-status" class="sr-only" role="status" aria-live="polite"></span><button id="copy-video-link" type="button" hidden aria-label="" data-i18n-aria-label="youtube.copy_video_link" title="" data-i18n-title="youtube.copy_video_link"><svg aria-hidden="true" viewBox="0 0 20 20"><path d="M7 6V3h10v11h-3M3 7h10v10H3z"/></svg></button><div class="settings-anchor"><button id="settings" type="button" aria-label="" data-i18n-aria-label="youtube.app_menu" aria-haspopup="menu" aria-controls="settings-menu" aria-expanded="false">⚙</button><div id="settings-menu" role="menu" hidden><button id="new-window" type="button" role="menuitem"><span data-i18n="youtube.new_window"></span></button><button id="open-settings" type="button" role="menuitem"><span data-i18n="youtube.settings_menu"></span></button><button id="always-above" type="button" role="menuitemcheckbox" aria-checked="false"><span data-i18n="youtube.always_above"></span><span id="always-above-check" aria-hidden="true">○</span></button><button id="fit-player" type="button" role="menuitem" onclick="closeSettingsMenu();window.orbitzFitPlayer()"><span data-i18n="youtube.fit_player"></span><kbd>Ctrl+T</kbd></button></div></div></header></div></div><main id="app-body">
 <section id="runner" aria-label="" data-i18n-aria-label="youtube.runner_label"><canvas id="runner-canvas" tabindex="0" role="img" aria-label="" aria-describedby="runner-help" data-i18n-aria-label="youtube.runner_label"></canvas><div id="runner-help" data-i18n="youtube.runner_help"></div><a id="runner-brand" href="https://www.orbit.zone" target="_blank" rel="noopener">orbit.zone</a><div id="runner-live" class="sr-only" role="status" aria-live="polite"></div></section>
 <div id="screen" hidden><span data-i18n="youtube.choose_video"></span></div>
-<div id="discovery" hidden><p id="status" role="status"><span data-i18n="youtube.api_hint"></span></p><div id="content"><div id="results" role="tabpanel" aria-labelledby="videos-tab"></div><nav id="view-tabs" role="tablist" aria-label="" data-i18n-aria-label="youtube.content" aria-orientation="vertical"><button id="videos-tab" data-i18n-aria-label="youtube.videos" aria-label="" data-i18n-title="youtube.videos" title="" role="tab" aria-selected="true" aria-controls="results"><svg class="filter-icon" aria-hidden="true" focusable="false" viewBox="0 -960 960 960"><path d="m380-300 280-180-280-180v360ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/></svg><span class="filter-label" data-i18n="youtube.videos"></span></button><button id="shorts-tab" data-i18n-aria-label="youtube.shorts" aria-label="" data-i18n-title="youtube.shorts" title="" role="tab" aria-selected="false" aria-controls="results" aria-describedby="shorts-hint" tabindex="-1"><svg class="filter-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="m18.931 9.99-1.441-.601 1.717-.913a4.48 4.48 0 0 0 1.874-6.078 4.506 4.506 0 0 0-6.09-1.874L4.792 5.929a4.504 4.504 0 0 0-2.402 4.193 4.521 4.521 0 0 0 2.666 3.904c.036.012 1.442.6 1.442.6l-1.706.901a4.51 4.51 0 0 0-2.369 3.967A4.528 4.528 0 0 0 6.93 24c.725 0 1.437-.174 2.08-.508l10.21-5.406a4.494 4.494 0 0 0 2.39-4.192 4.525 4.525 0 0 0-2.678-3.904ZM9.597 15.19V8.824l6.007 3.184z"/></svg><span class="filter-label" data-i18n="youtube.shorts"></span></button><button id="live-tab" data-i18n-aria-label="youtube.live" aria-label="" data-i18n-title="youtube.live" title="" role="tab" aria-selected="false" aria-controls="results" tabindex="-1"><svg class="filter-icon" aria-hidden="true" focusable="false" viewBox="0 -960 960 960"><path d="M197-197q-54-55-85.5-127.5T80-480q0-84 31.5-156.5T197-763l57 57q-44 44-69 102t-25 124q0 67 25 125t69 101l-57 57Zm113-113q-32-33-51-76.5T240-480q0-51 19-94.5t51-75.5l57 57q-22 22-34.5 51T320-480q0 33 12.5 62t34.5 51l-57 57Zm170-90q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm170 90-57-57q22-22 34.5-51t12.5-62q0-33-12.5-62T593-593l57-57q32 32 51 75.5t19 94.5q0 50-19 93.5T650-310Zm113 113-57-57q44-44 69-102t25-124q0-67-25-125t-69-101l57-57q54 54 85.5 126.5T880-480q0 83-31.5 155.5T763-197Z"/></svg><span class="filter-label" data-i18n="youtube.live"></span></button><button id="podcasts-tab" data-i18n-aria-label="youtube.podcasts" aria-label="" data-i18n-title="youtube.podcasts" title="" role="tab" aria-selected="false" aria-controls="results" aria-describedby="podcasts-hint" tabindex="-1"><svg class="filter-icon" aria-hidden="true" focusable="false" viewBox="0 -960 960 960"><path d="M440-80v-331q-18-11-29-28.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 23-11 41t-29 28v331h-80ZM204-190q-57-55-90.5-129.5T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 86-33.5 161T756-190l-56-56q46-44 73-104.5T800-480q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 69 27 129t74 104l-57 57Zm113-113q-35-33-56-78.5T240-480q0-100 70-170t170-70q100 0 170 70t70 170q0 53-21 99t-56 78l-57-57q25-23 39.5-54t14.5-66q0-66-47-113t-113-47q-66 0-113 47t-47 113q0 36 14.5 66.5T374-360l-57 57Z"/></svg><span class="filter-label" data-i18n="youtube.podcasts"></span></button><span id="shorts-hint" class="sr-only" data-i18n="youtube.shorts_hint"></span><span id="podcasts-hint" class="sr-only" data-i18n="youtube.podcasts_hint"></span></nav></div></div>
+</main><div id="discovery" hidden><p id="status" role="status"><span data-i18n="youtube.api_hint"></span></p><div id="content"><div id="results" role="tabpanel" aria-labelledby="videos-tab"></div><nav id="view-tabs" role="tablist" aria-label="" data-i18n-aria-label="youtube.content" aria-orientation="vertical"><button id="videos-tab" data-i18n-aria-label="youtube.videos" aria-label="" data-i18n-title="youtube.videos" title="" role="tab" aria-selected="true" aria-controls="results"><svg class="filter-icon" aria-hidden="true" focusable="false" viewBox="0 -960 960 960"><path d="m380-300 280-180-280-180v360ZM160-160q-33 0-56.5-23.5T80-240v-480q0-33 23.5-56.5T160-800h640q33 0 56.5 23.5T880-720v480q0 33-23.5 56.5T800-160H160Zm0-80h640v-480H160v480Zm0 0v-480 480Z"/></svg><span class="filter-label" data-i18n="youtube.videos"></span></button><button id="shorts-tab" data-i18n-aria-label="youtube.shorts" aria-label="" data-i18n-title="youtube.shorts" title="" role="tab" aria-selected="false" aria-controls="results" aria-describedby="shorts-hint" tabindex="-1"><svg class="filter-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="m18.931 9.99-1.441-.601 1.717-.913a4.48 4.48 0 0 0 1.874-6.078 4.506 4.506 0 0 0-6.09-1.874L4.792 5.929a4.504 4.504 0 0 0-2.402 4.193 4.521 4.521 0 0 0 2.666 3.904c.036.012 1.442.6 1.442.6l-1.706.901a4.51 4.51 0 0 0-2.369 3.967A4.528 4.528 0 0 0 6.93 24c.725 0 1.437-.174 2.08-.508l10.21-5.406a4.494 4.494 0 0 0 2.39-4.192 4.525 4.525 0 0 0-2.678-3.904ZM9.597 15.19V8.824l6.007 3.184z"/></svg><span class="filter-label" data-i18n="youtube.shorts"></span></button><button id="live-tab" data-i18n-aria-label="youtube.live" aria-label="" data-i18n-title="youtube.live" title="" role="tab" aria-selected="false" aria-controls="results" tabindex="-1"><svg class="filter-icon" aria-hidden="true" focusable="false" viewBox="0 -960 960 960"><path d="M197-197q-54-55-85.5-127.5T80-480q0-84 31.5-156.5T197-763l57 57q-44 44-69 102t-25 124q0 67 25 125t69 101l-57 57Zm113-113q-32-33-51-76.5T240-480q0-51 19-94.5t51-75.5l57 57q-22 22-34.5 51T320-480q0 33 12.5 62t34.5 51l-57 57Zm170-90q-33 0-56.5-23.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 33-23.5 56.5T480-400Zm170 90-57-57q22-22 34.5-51t12.5-62q0-33-12.5-62T593-593l57-57q32 32 51 75.5t19 94.5q0 50-19 93.5T650-310Zm113 113-57-57q44-44 69-102t25-124q0-67-25-125t-69-101l57-57q54 54 85.5 126.5T880-480q0 83-31.5 155.5T763-197Z"/></svg><span class="filter-label" data-i18n="youtube.live"></span></button><button id="podcasts-tab" data-i18n-aria-label="youtube.podcasts" aria-label="" data-i18n-title="youtube.podcasts" title="" role="tab" aria-selected="false" aria-controls="results" aria-describedby="podcasts-hint" tabindex="-1"><svg class="filter-icon" aria-hidden="true" focusable="false" viewBox="0 -960 960 960"><path d="M440-80v-331q-18-11-29-28.5T400-480q0-33 23.5-56.5T480-560q33 0 56.5 23.5T560-480q0 23-11 41t-29 28v331h-80ZM204-190q-57-55-90.5-129.5T80-480q0-83 31.5-156T197-763q54-54 127-85.5T480-880q83 0 156 31.5T763-763q54 54 85.5 127T880-480q0 86-33.5 161T756-190l-56-56q46-44 73-104.5T800-480q0-134-93-227t-227-93q-134 0-227 93t-93 227q0 69 27 129t74 104l-57 57Zm113-113q-35-33-56-78.5T240-480q0-100 70-170t170-70q100 0 170 70t70 170q0 53-21 99t-56 78l-57-57q25-23 39.5-54t14.5-66q0-66-47-113t-113-47q-66 0-113 47t-47 113q0 36 14.5 66.5T374-360l-57 57Z"/></svg><span class="filter-label" data-i18n="youtube.podcasts"></span></button><span id="shorts-hint" class="sr-only" data-i18n="youtube.shorts_hint"></span><span id="podcasts-hint" class="sr-only" data-i18n="youtube.podcasts_hint"></span></nav></div></div>
 <div id="config" class="modal-overlay" hidden role="dialog" aria-modal="true" aria-labelledby="config-title" tabindex="-1"><section class="modal-card"><div class="modal-head"><h2 id="config-title" data-i18n="youtube.settings_title"></h2><button id="config-close" type="button" aria-label="" data-i18n-aria-label="youtube.close_settings">×</button></div><div class="modal-body"><label for="language"><span data-i18n="youtube.language"></span></label><select id="language"><option value="pt-BR" data-i18n="youtube.language_pt_br">Português (Brasil)</option><option value="en-US" data-i18n="youtube.language_en_us">English (United States)</option></select><label for="key"><span data-i18n="youtube.api_key"></span></label><input id="key" type="password" autocomplete="off" placeholder="" data-i18n-placeholder="youtube.paste_key"><button id="save"><span data-i18n="youtube.save_key"></span></button><p id="config-status" role="status" hidden></p><p><span data-i18n="youtube.key_privacy"></span></p><a href="https://console.cloud.google.com/apis/credentials" target="_blank"><span data-i18n="youtube.create_key"></span></a></div></section></div>
-<footer><a id="external" href="https://www.youtube.com/" target="_blank" hidden><span data-i18n="youtube.external"></span></a><small class="hint"><span data-i18n="youtube.fullscreen_hint"></span></small></footer>
+<div id="footer-clip"><footer><a id="external" href="https://www.youtube.com/" target="_blank" hidden><span data-i18n="youtube.external"></span></a><small class="hint"><span data-i18n="youtube.fullscreen_hint"></span></small></footer></div>
 <script>
 // Owned UI text is bound by ID; provider/user text is never looked up in catalogs.
 let uiLocale='pt-BR',uiCatalog={},uiReady=false;
@@ -31,6 +32,7 @@ window.orbitzSetLanguage=function(payload){
  const frame=document.getElementById('youtube-player');if(frame)frame.title=uiTr('youtube.player_title');
  if(window.orbitzRunnerLanguageChanged)window.orbitzRunnerLanguageChanged();
  if(window.orbitzFeaturesLanguage)window.orbitzFeaturesLanguage();
+ window.orbitzSyncWindowButtons?.();
  if(!uiReady){uiReady=true;loadRecommendations();}
 };
 
@@ -166,7 +168,7 @@ async function play(id,title,liveHint=false,channel=''){
  $('runner').hidden=true;
  $('screen').hidden=false;
  notifyWindowState();
- window.orbitzBeforeVideo?.();selected=id;window.orbitzOnVideo?.(id,title,liveHint,channel);window.orbitzRefreshPointer?.();syncControls();
+ window.orbitzBeforeVideo?.();selected=id;window.orbitzOnVideo?.(id,title,liveHint,channel);syncChrome();
  $('copy-video-link').hidden=false;$('external').hidden=false;
  ++playbackRequest;stopPlaybackRetry();
  $('external').href='https://www.youtube.com/watch?v='+encodeURIComponent(id);
@@ -224,45 +226,12 @@ $('live-tab').onclick=()=>setTab('live');
 $('podcasts-tab').onclick=()=>setTab('podcasts');
 $('view-tabs').onkeydown=event=>{if(['ArrowUp','ArrowDown','Home','End'].includes(event.key)){event.preventDefault();const tabs=['videos','shorts','live','podcasts'],index=tabs.indexOf(activeTab);const tab=event.key==='Home'?tabs[0]:event.key==='End'?tabs[tabs.length-1]:tabs[(index+(event.key==='ArrowDown'?1:tabs.length-1))%tabs.length];setTab(tab);$(tab+'-tab').focus();}};
 
-// App controls and settings menu. Ctrl+H is handled by GTK even inside the player iframe.
-let controlsRequestedHidden=false,controlsHidden=false,controlsSequence=0,lockedPlayerRect=null,lockedPlayerNode=null;
-function controlsContent(){return !$('screen').hidden?$('screen'):!$('runner').hidden?$('runner'):null}
-function releasePlayerSize(){
- if(controlsHidden||!lockedPlayerRect)return;
- if(Math.abs(window.innerWidth-lockedPlayerRect.viewport_width)>1||Math.abs(window.innerHeight-lockedPlayerRect.viewport_height)>1)return;
- for(const property of ['width','height','min-height','flex','position','left','top'])lockedPlayerNode.style.removeProperty(property);
- lockedPlayerRect=null;lockedPlayerNode=null;
-}
-window.addEventListener('resize',releasePlayerSize);
-function syncControls(){
- reconcileAutoControls();
- const content=controlsContent();
- const hidden=controlsRequestedHidden&&Boolean(content)&&$('config').hidden&&$('discovery').hidden&&$('settings-menu').hidden&&!window.orbitzFeaturesOpen?.();
- if(hidden===controlsHidden)return;
- const payload={state:windowLayoutState(),hide_controls:hidden,controls_sequence:++controlsSequence};
- if(hidden){
-  const rect=content.getBoundingClientRect();
-  if(!(rect.width>0&&rect.height>0&&window.innerWidth>0&&window.innerHeight>0))return;
-  lockedPlayerRect={left:rect.left,top:rect.top,width:rect.width,height:rect.height,viewport_width:window.innerWidth,viewport_height:window.innerHeight};
-  lockedPlayerNode=content;payload.player_rect=lockedPlayerRect;
-  if(window.orbitzWindowLocked){content.style.setProperty('position','fixed');content.style.setProperty('left',rect.left+'px');content.style.setProperty('top',rect.top+'px');}
-  content.style.setProperty('width',rect.width+'px');content.style.setProperty('height',rect.height+'px');content.style.setProperty('min-height','0');content.style.setProperty('flex','0 0 auto');
- }
- controlsHidden=hidden;document.body.classList.toggle('controls-hidden',hidden);
- api('window-state',payload).then(()=>{if(payload.controls_sequence===controlsSequence)releasePlayerSize()}).catch(()=>{
-  if(payload.controls_sequence!==controlsSequence)return;
-  if(hidden&&controlsHidden){controlsRequestedHidden=false;controlsHidden=false;document.body.classList.remove('controls-hidden');releasePlayerSize();uiText($('player-action-status'),'youtube.controls_failed');}
- });
-}
-window.orbitzToggleControls=()=>{
- if(window.orbitzFeaturesOpen?.()||autoControlsPending||autoControlsEnabled||!controlsContent()||!$('config').hidden)return;
- if(!$('discovery').hidden)closeDiscovery();
- closeSettingsMenu();controlsRequestedHidden=!controlsRequestedHidden;syncControls();
-};
-function closeSettingsMenu(restoreFocus=false){if($('settings-menu').hidden)return;$('settings-menu').hidden=true;$('settings').setAttribute('aria-expanded','false');if(restoreFocus)$('settings').focus();syncControls()}
+// App controls and settings menu.
+function syncChrome(){window.orbitzSyncChrome?.()}
+function closeSettingsMenu(restoreFocus=false){if($('settings-menu').hidden)return;$('settings-menu').hidden=true;$('settings').setAttribute('aria-expanded','false');if(restoreFocus)$('settings').focus();syncChrome()}
 function openSettingsMenu(){
  if(!$('settings-menu').hidden){closeSettingsMenu(true);return;}
- $('settings-menu').hidden=false;$('settings').setAttribute('aria-expanded','true');syncControls();$('open-settings').focus();
+ $('settings-menu').hidden=false;$('settings').setAttribute('aria-expanded','true');syncChrome();$('open-settings').focus();
 }
 $('settings').onclick=openSettingsMenu;
 $('new-window').onclick=async()=>{closeSettingsMenu();try{await api('new-window',{})}catch(error){uiErrorText($('player-action-status'),error)}};
@@ -275,69 +244,6 @@ $('always-above').onclick=async()=>{
  catch{uiText($('player-action-status'),'youtube.always_above_failed');}
  finally{abovePending=false;$('always-above').disabled=false;}
 };
-// Automatic controls: one cancellable deadline, tied to the current pointer epoch.
-let autoHideDelay=2000,autoShowDelay=500;
-let autoControlsEnabled=false,autoControlsPending=false,autoPointerInside=null;
-let autoPointerLastSample=null,autoPointerPendingSample=null;
-let autoControlsTimer=0,autoTimerGeneration=0,autoPointerSequence=0,autoDeadlineHidden=null;
-function cancelAutoControlsTimer(){
- ++autoTimerGeneration;
- if(autoControlsTimer)clearTimeout(autoControlsTimer);
- autoControlsTimer=0;autoDeadlineHidden=null;
-}
-function autoControlsBlocked(){return Boolean(window.orbitzFeaturesOpen?.())||Boolean(window.orbitzResumeOffered?.())||!$('config').hidden||!$('discovery').hidden||!$('settings-menu').hidden||!controlsContent()}
-function autoPointerHitsContent(sample){
- const content=controlsContent(),rect=content?.getBoundingClientRect();
- const x=sample.x*window.innerWidth,y=sample.y*window.innerHeight;
- return Boolean(sample.inside&&rect&&x>=rect.left&&x<rect.left+rect.width&&y>=rect.top&&y<rect.top+rect.height);
-}
-function reconcileAutoControls(){
- if(typeof playerResizeMode!=='undefined'&&playerResizeMode){cancelAutoControlsTimer();return;}
- // Only fresh native pointer samples classify the pointer. Layout changes
- // during hiding/restoring must never reinterpret an older coordinate sample.
- if(autoControlsPending||!autoControlsEnabled||autoPointerInside===null||autoControlsBlocked()){
-  cancelAutoControlsTimer();
-  if(autoControlsEnabled)controlsRequestedHidden=false;
-  return;
- }
- const hidden=!autoPointerInside;
- if(hidden===controlsRequestedHidden){cancelAutoControlsTimer();return;}
- if(autoControlsTimer&&autoDeadlineHidden===hidden)return;
- cancelAutoControlsTimer();autoDeadlineHidden=hidden;
- const generation=autoTimerGeneration;
- autoControlsTimer=setTimeout(()=>{
-  if(generation!==autoTimerGeneration||!autoControlsEnabled||autoControlsBlocked()||hidden===autoPointerInside)return;
-  autoControlsTimer=0;autoDeadlineHidden=null;controlsRequestedHidden=hidden;syncControls();
- },hidden?autoHideDelay:autoShowDelay);
-}
-window.orbitzAutoPointer=sample=>{
- if(sample.sequence!==autoPointerSequence)return;
- if(autoControlsPending){autoPointerPendingSample=sample;return;}
- if(!autoControlsEnabled)return;
- autoPointerLastSample=sample;
- const inside=autoPointerHitsContent(sample);
- if(inside===autoPointerInside)return;
- autoPointerInside=inside;reconcileAutoControls();
-};
-window.orbitzRefreshPointer=()=>{if(!controlsHidden&&!lockedPlayerRect&&autoPointerLastSample)window.orbitzAutoPointer(autoPointerLastSample)};
-$('auto-controls').onclick=async()=>{
- if(autoControlsPending)return;
- const previousPointer=autoPointerLastSample,previousInside=autoPointerInside,previousSequence=autoPointerSequence,enabled=!autoControlsEnabled,sequence=++autoPointerSequence;
- autoControlsPending=true;$('auto-controls').disabled=true;cancelAutoControlsTimer();
- // Ignore samples from the old epoch while the native observer is reconfigured.
- autoPointerInside=null;autoPointerLastSample=null;autoPointerPendingSample=null;
- try{
-  await api('auto-controls',{enabled,sequence});
-  autoControlsEnabled=enabled;controlsRequestedHidden=false;
-  $('auto-controls').setAttribute('aria-checked',String(enabled));$('auto-controls-check').textContent=enabled?'✓':'○';
-  $('controls-shortcut').setAttribute('aria-disabled',String(enabled));
-  syncControls();
-  autoControlsPending=false;
-  if(autoPointerPendingSample)window.orbitzAutoPointer(autoPointerPendingSample);
- }catch{autoPointerSequence=previousSequence;autoPointerLastSample=previousPointer;autoPointerInside=previousInside;autoControlsPending=false;reconcileAutoControls();uiText($('player-action-status'),'youtube.auto_controls_failed');}
- finally{autoControlsPending=false;$('auto-controls').disabled=false;}
-};
-window.addEventListener('pagehide',()=>{cancelAutoControlsTimer();autoControlsEnabled=false;});
 $('settings-menu').addEventListener('keydown',event=>{
  if(event.key==='Tab'){closeSettingsMenu();return;}
  if(!['ArrowDown','ArrowUp','Home','End'].includes(event.key))return;
@@ -355,11 +261,11 @@ document.addEventListener('click',event=>{
 });
 let settingsReturnFocus=null;
 function windowLayoutState(){if(!$('config').hidden&&$('discovery').hidden&&$('screen').hidden)return 'settings';return $('discovery').hidden?($('screen').hidden?'idle':'player'):'panel'}
-function notifyWindowState(){api('window-state',{state:windowLayoutState()}).catch(()=>{})}
-function openSettings(){if(!$('config').hidden)return;settingsReturnFocus=$('settings-menu').contains(document.activeElement)?$('settings'):document.activeElement;$('config').hidden=false;closeSettingsMenu();$('config-status').hidden=true;$('language').value=uiLocale;$('key').focus();notifyWindowState();syncControls()}
-function closeSettings(){if($('config').hidden)return;$('config').hidden=true;const target=settingsReturnFocus?.isConnected?settingsReturnFocus:$('settings');settingsReturnFocus=null;target.focus();notifyWindowState();syncControls()}
-function openDiscovery(){if(!$('discovery').hidden)return;$('discovery').hidden=false;$('query').setAttribute('aria-expanded','true');notifyWindowState();syncControls();window.orbitzRefreshRecommendations?.()}
-function closeDiscovery(){if($('discovery').hidden)return;$('discovery').hidden=true;$('query').setAttribute('aria-expanded','false');notifyWindowState();syncControls()}
+function notifyWindowState(){const body=$('app-body'),r=body?.getBoundingClientRect();const content_bounds=r&&r.width>0&&r.height>0?{left:Math.max(0,r.left/innerWidth),top:Math.max(0,r.top/innerHeight),right:Math.min(1,r.right/innerWidth),bottom:Math.min(1,r.bottom/innerHeight)}:null;api('window-state',{state:windowLayoutState(),...(content_bounds?{content_bounds}:{})}).catch(()=>{})}
+function openSettings(){if(!$('config').hidden)return;settingsReturnFocus=$('settings-menu').contains(document.activeElement)?$('settings'):document.activeElement;$('config').hidden=false;closeSettingsMenu();$('config-status').hidden=true;$('language').value=uiLocale;$('key').focus();notifyWindowState();syncChrome()}
+function closeSettings(){if($('config').hidden)return;$('config').hidden=true;const target=settingsReturnFocus?.isConnected?settingsReturnFocus:$('settings');settingsReturnFocus=null;target.focus();notifyWindowState();syncChrome()}
+function openDiscovery(){if(!$('discovery').hidden)return;$('discovery').hidden=false;$('query').setAttribute('aria-expanded','true');notifyWindowState();syncChrome();window.orbitzRefreshRecommendations?.()}
+function closeDiscovery(){if($('discovery').hidden)return;$('discovery').hidden=true;$('query').setAttribute('aria-expanded','false');notifyWindowState();syncChrome()}
 $('query').addEventListener('focus',openDiscovery);
 $('search').addEventListener('click',openDiscovery);
 $('config-close').onclick=closeSettings;
@@ -371,7 +277,6 @@ $('search').onsubmit=event=>{event.preventDefault();openDiscovery();searchCurren
 document.addEventListener('focusin',event=>{if(!$('settings-menu').contains(event.target)&&event.target!==$('settings'))closeSettingsMenu();if(!$('discovery').hidden&&!$('discovery').contains(event.target)&&!$('search').contains(event.target)&&!$('config').contains(event.target)&&event.target!==$('settings'))closeDiscovery()});
 document.addEventListener('keydown',event=>{
  if(event.ctrlKey&&!event.altKey&&!event.metaKey&&!event.shiftKey&&event.key?.toLowerCase()==='t'){event.preventDefault();if(!event.repeat)window.orbitzFitPlayer();return;}
- if(event.ctrlKey&&!event.altKey&&!event.metaKey&&!event.shiftKey&&event.key?.toLowerCase()==='h'){event.preventDefault();if(!event.repeat)window.orbitzToggleControls();return;}
  if(event.key==='Escape'){
   if(!$('config').hidden){event.preventDefault();closeSettings();}
   else if(!$('settings-menu').hidden){event.preventDefault();closeSettingsMenu(true);}
@@ -438,20 +343,97 @@ function syncResizeOverlay(){
  const r=resizeTarget.getBoundingClientRect();Object.assign(resizeOverlay.style,{left:r.left+'px',top:r.top+'px',width:r.width+'px',height:r.height+'px'});
  resizeOverlay.querySelector('.resize-tip').textContent=uiTr('youtube.resize_hint');$('resize-done').textContent=uiTr('youtube.resize_done');
 }
-function closeResizeOverlay(){playerResizeMode=false;resizeOverlay.hidden=true;notifyResizeGame();if(resizeReturnFocus?.isConnected)resizeReturnFocus.focus({preventScroll:true});resizeTarget=null;resizeReturnFocus=null;reconcileAutoControls()}
+function closeResizeOverlay(){playerResizeMode=false;resizeOverlay.hidden=true;notifyResizeGame();if(resizeReturnFocus?.isConnected)resizeReturnFocus.focus({preventScroll:true});resizeTarget=null;resizeReturnFocus=null;syncChrome()}
 window.orbitzFitPlayer=()=>{
  if(playerResizeMode){closeResizeOverlay();return}
  if(!resizeContent()||!$('discovery').hidden||!$('config').hidden||window.orbitzFeaturesOpen?.())return;
  if(window.orbitzWindowLocked){uiText($('player-action-status'),'youtube.fit_locked');return}
- resizeTarget=resizeContent();resizeReturnFocus=document.activeElement;window.dispatchEvent(new Event('blur'));playerResizeMode=true;notifyResizeGame();cancelAutoControlsTimer();resizeOverlay.hidden=false;syncResizeOverlay();$('resize-done').focus({preventScroll:true});
+ resizeTarget=resizeContent();resizeReturnFocus=document.activeElement;window.dispatchEvent(new Event('blur'));playerResizeMode=true;notifyResizeGame();resizeOverlay.hidden=false;syncResizeOverlay();$('resize-done').focus({preventScroll:true});
 };
 $('resize-done').onclick=closeResizeOverlay;
 window.addEventListener('resize',()=>{
- if(playerResizeMode&&lockedPlayerNode){for(const p of ['width','height','min-height','flex','position','left','top'])lockedPlayerNode.style.removeProperty(p);lockedPlayerNode=null;lockedPlayerRect=null}
  syncResizeOverlay();
 });
 const resizeObserver=new MutationObserver(()=>{if(playerResizeMode)syncResizeOverlay()});for(const node of [$('screen'),$('runner')])resizeObserver.observe(node,{attributes:true,attributeFilter:['hidden','class']});
 document.addEventListener('keydown',event=>{if(!playerResizeMode||event.ctrlKey||event.altKey||event.metaKey||event.key==='Tab')return;event.preventDefault();event.stopImmediatePropagation();if(['Escape','Enter'].includes(event.key))closeResizeOverlay()},true);
 
 // Resize overlay end
+
+// Three full-width rows; transforms never change the body's allocation.
+const rowsStyle=document.createElement('style');rowsStyle.textContent=`html,body{background:transparent}body{display:grid;grid-template-rows:auto minmax(0,1fr) auto}
+#header-clip{grid-row:1;position:relative;z-index:1;width:100%;overflow:hidden;isolation:isolate;contain:paint;background:transparent}
+#footer-clip{grid-row:3;position:relative;z-index:1;width:100%;overflow:hidden;isolation:isolate;contain:paint;background:transparent}
+#app-header{position:relative;width:100%;background:#171b20;transform:translate3d(0,0,0);will-change:transform;backface-visibility:hidden;transition:none}
+#footer-clip>footer{position:relative;width:100%;background:#171b20;transform:translate3d(0,0,0);will-change:transform;backface-visibility:hidden;transition:none}
+#app-body{grid-row:2;position:relative;z-index:2;display:flex;min-height:0;width:100%;background:#101720;overflow:hidden;isolation:isolate}
+#app-body>#runner{width:100%;margin:0;border:0;border-radius:0;min-height:0}#app-body>#screen{width:100%;margin:0}
+body.chrome-retracted #app-header{pointer-events:none}
+body.chrome-retracted #footer-clip>footer{pointer-events:none}
+#app-body>#runner[hidden],#app-body>#screen[hidden]{display:none}#games-home{border-radius:0}
+#discovery{inset:var(--app-header-height,96px) 0 26px;border-radius:0}
+#settings-menu{position:fixed;top:calc(var(--app-header-height,96px) - 2px);right:14px;z-index:30}
+`;document.head.append(rowsStyle);
+// Menus are outside the animation masks, keeping the masks permanently clipped.
+document.body.append($('settings-menu'));
+let chromeHoverInside=true,chromeHoverReady=false,chromePointerInWindow=true,chromePointerIdle=false;
+// One clock drives both masks. End frames retain the same transform/layer.
+let chromeProgress=0,chromeTarget=0,chromeAnimation=0;
+function animateHoverChrome(retracted){
+ const target=retracted?1:0;if(target===chromeTarget)return;
+ chromeTarget=target;cancelAnimationFrame(chromeAnimation);
+ const from=chromeProgress,start=performance.now(),duration=500*Math.abs(target-from);
+ const header=$('app-header'),footer=document.querySelector('#footer-clip>footer');
+ function frame(now){
+  const t=duration?Math.min(1,Math.max(0,(now-start)/duration)):1,eased=t*t*(3-2*t);
+  chromeProgress=from+(target-from)*eased;
+  header.style.transform='translate3d(0,'+(chromeProgress*100)+'%,0)';
+  footer.style.transform='translate3d(0,'+(-chromeProgress*100)+'%,0)';
+  chromeAnimation=t<1?requestAnimationFrame(frame):0;
+ }
+ chromeAnimation=requestAnimationFrame(frame);
+}
+window.orbitzSyncChrome=syncHoverChrome;
+function syncHoverChrome(){
+ const blocked=playerResizeMode||!$('config').hidden||!$('discovery').hidden||!$('settings-menu').hidden||window.orbitzFeaturesOpen?.();
+ const focused=chromePointerInWindow&&document.hasFocus()&&document.activeElement?.matches('input,textarea,select,[contenteditable=true]')&&$('app-header').contains(document.activeElement);
+ const retracted=chromeHoverReady&&(!chromeHoverInside||chromePointerIdle)&&(!chromePointerInWindow||chromePointerIdle||(!blocked&&!focused));
+ document.body.classList.toggle('chrome-retracted',retracted);animateHoverChrome(retracted);
+}
+window.orbitzChromePointer=sample=>{
+ chromePointerInWindow=Boolean(sample.inside);chromePointerIdle=Boolean(sample.idle&&sample.inside);
+ if(!sample.inside){chromeHoverInside=false;chromeHoverReady=true;syncHoverChrome();return}
+ const rect=$('app-body').getBoundingClientRect(),x=sample.x*innerWidth,y=sample.y*innerHeight;
+ const overBody=x>=rect.left&&x<rect.right&&y>=rect.top&&y<rect.bottom;
+ // Body entry reveals controls; only a complete window exit clears that state.
+ if(overBody){chromeHoverInside=true;chromeHoverReady=true}
+ syncHoverChrome();
+};
+new ResizeObserver(()=>{document.documentElement.style.setProperty('--app-header-height',$('app-header').offsetHeight+'px');notifyWindowState()}).observe($('app-header'));new ResizeObserver(notifyWindowState).observe($('app-body'));
+for(const event of ['focusin','focusout'])document.addEventListener(event,syncHoverChrome);
+new MutationObserver(syncHoverChrome).observe(document.body,{subtree:true,attributes:true,attributeFilter:['hidden']});
+
+
+// Invisible native resize grips, independent of the controls' visibility.
+const edgeStyle=document.createElement('style');edgeStyle.textContent=`.window-resize-edge{position:fixed;z-index:50;background:transparent;touch-action:none;user-select:none}.window-resize-edge[data-window-edge=n]{left:10px;right:10px;top:0;height:5px;cursor:ns-resize}.window-resize-edge[data-window-edge=s]{left:10px;right:10px;bottom:0;height:5px;cursor:ns-resize}.window-resize-edge[data-window-edge=w]{left:0;top:10px;bottom:10px;width:5px;cursor:ew-resize}.window-resize-edge[data-window-edge=e]{right:0;top:10px;bottom:10px;width:5px;cursor:ew-resize}.window-resize-edge[data-window-edge=nw],.window-resize-edge[data-window-edge=ne],.window-resize-edge[data-window-edge=sw],.window-resize-edge[data-window-edge=se]{width:10px;height:10px}.window-resize-edge[data-window-edge=nw]{left:0;top:0;cursor:nwse-resize}.window-resize-edge[data-window-edge=ne]{right:0;top:0;cursor:nesw-resize}.window-resize-edge[data-window-edge=sw]{left:0;bottom:0;cursor:nesw-resize}.window-resize-edge[data-window-edge=se]{right:0;bottom:0;cursor:nwse-resize}.window-size-locked .window-resize-edge{display:none}`;document.head.append(edgeStyle);
+for(const edge of ['n','s','w','e','nw','ne','sw','se']){
+ const grip=document.createElement('div');grip.className='window-resize-edge';grip.dataset.windowEdge=edge;grip.setAttribute('aria-hidden','true');
+ grip.onpointerdown=event=>{if(event.button!==0||window.orbitzWindowLocked)return;event.preventDefault();event.stopPropagation();api('fit-player',{edge,x:event.clientX,y:event.clientY,viewport_width:innerWidth,viewport_height:innerHeight}).catch(()=>uiText($('player-action-status'),'youtube.fit_failed'))};document.body.append(grip);
+}
+
+// Internal window chrome: actions still belong to GTK, including drag and close.
+const windowStyle=document.createElement('style');windowStyle.textContent='#window-bar{height:34px;flex:0 0 34px;display:flex;align-items:center;position:relative;background:#20262e;border-bottom:1px solid #35414f;user-select:none;-webkit-user-select:none}#window-title{width:100%;padding:0 126px;text-align:center;font-size:12px;font-weight:600;color:#c5d2df;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:none}.window-buttons{position:absolute;right:0;top:0;height:34px;display:flex}.window-buttons button{border:0;border-radius:0;width:38px;height:34px;padding:0;background:transparent;font-size:19px;line-height:1;color:#c5d2df}.window-buttons button{display:flex;align-items:center;justify-content:center}.window-buttons svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.3;pointer-events:none}.window-buttons button:focus:not(:focus-visible){outline:none}.window-buttons button:focus-visible{outline:2px solid #77bff0;outline-offset:-3px}.window-buttons button:hover{background:#394451}.window-buttons .window-close:hover{background:#b73745;color:white}#settings-menu .window-menu-actions{border-top:1px solid #46515d;margin-top:5px;padding-top:5px}';document.head.append(windowStyle);
+window.orbitzSyncWindowButtons=()=>{
+ document.body.classList.toggle('window-size-locked',Boolean(window.orbitzWindowLocked));
+ const maximized=Boolean(window.orbitzWindowMaximized),key='youtube.'+(maximized?'window_restore':'window_maximize');
+ const button=$('window-maximize');button.dataset.i18nTitle=key;button.dataset.i18nAriaLabel=key;button.title=uiTr(key);button.setAttribute('aria-label',uiTr(key));button.dataset.maximized=String(maximized);
+ button.innerHTML=maximized?'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 5V2.5h8.5V11H11"/><rect x="2.5" y="5" width="8.5" height="8.5"/></svg>':'<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="3" width="10" height="10"/></svg>';
+ const menu=$('settings-menu').querySelector('[data-window-toggle]');if(menu){menu.dataset.i18n=key;menu.textContent=uiTr(key)}
+};
+function sendWindowCommand(command,extra={}){return api('window-action',{command,...extra}).catch(()=>uiText($('player-action-status'),'youtube.window_action_failed'))}
+for(const button of document.querySelectorAll('[data-window-command]'))button.onclick=event=>{sendWindowCommand(button.dataset.windowCommand);if(event.detail>0)button.blur()};
+$('window-bar').onpointerdown=event=>{if(event.button!==0||event.target.closest('button'))return;event.preventDefault();if(event.detail===2){sendWindowCommand('maximize');return}sendWindowCommand('move',{x:event.clientX,y:event.clientY,viewport_width:innerWidth,viewport_height:innerHeight})};
+$('window-bar').oncontextmenu=event=>{event.preventDefault();openSettingsMenu()};
+const windowMenu=document.createElement('div');windowMenu.className='window-menu-actions';windowMenu.setAttribute('role','group');
+for(const [command,key] of [['minimize','window_minimize'],['maximize','window_maximize'],['close','window_close']]){const button=document.createElement('button');button.type='button';button.setAttribute('role','menuitem');if(command==='maximize')button.dataset.windowToggle='true';button.dataset.i18n='youtube.'+key;button.textContent=uiTr('youtube.'+key);button.onclick=()=>{closeSettingsMenu();sendWindowCommand(command)};windowMenu.append(button)}$('settings-menu').append(windowMenu);window.orbitzSyncWindowButtons();
+
 </script><script src="features.js"></script><script src="maze.js"></script><script src="game_synth.js"></script><script src="game_audio.js"></script><script src="game_controls.js"></script><script src="invaders.js"></script><script src="asteroids.js"></script><script src="extra_games.js"></script><script src="games_home.js"></script></html>

@@ -45,12 +45,19 @@ class LibraryTests(unittest.TestCase):
 
     def test_preferences_roundtrip_and_private_file(self):
         result=library.action({});self.assertEqual(result['preferences'],library.DEFAULTS)
-        result=library.action(dict(op='preferences',values=dict(always_above=True,auto_controls=True,hide_delay=3000,show_delay=800)))
-        self.assertEqual(result['preferences']['hide_delay'],3000)
+        result=library.action(dict(op='preferences',values=dict(always_above=True)))
+        self.assertTrue(result['preferences']['always_above'])
         self.assertEqual(library.DATABASE.stat().st_mode&0o777,0o600)
-        for value in ({'auto_controls':1},{'hide_delay':99},{'show_delay':True},{'unknown':False}):
+        for value in ({'always_above':1},{'game_volume':True},{'unknown':False}):
             with self.assertRaises(ValueError):library.action(dict(op='preferences',values=value))
-        self.assertTrue(library.action({})['preferences']['auto_controls'])
+        self.assertTrue(library.action({})['preferences']['always_above'])
+
+    def test_retired_preferences_are_pruned_without_losing_current_values(self):
+        with library.connection() as db:library.put(db,'preferences',{'always_above':True,'retired_setting':123})
+        result=library.action({})
+        self.assertTrue(result['preferences']['always_above'])
+        self.assertNotIn('retired_setting',result['preferences'])
+        with library.connection() as db:self.assertEqual(library.setting(db,'preferences',{}),{'always_above':True})
 
     def test_bookmarks_export_excludes_secrets_preferences_resume_queue(self):
         for kind in ('favorites','later'):library.action(dict(op='save',kind=kind,video=VIDEO))

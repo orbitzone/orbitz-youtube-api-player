@@ -14,7 +14,7 @@ Downloaded source SHA-256:
 
 ## Kenney Digital Audio (downloaded asset library)
 
-62 unmodified OGG files in assets/audio/kenney-digital-audio/, by Kenney, CC0 1.0 Universal. Official source: https://kenney.nl/assets/digital-audio . Retrieved from the community mirror https://github.com/Mcamento8/open-game-sfx-index on 2026-11-01 because the direct upstream download failed. License text: assets/audio/kenney-digital-audio/LICENSE.txt (official CC0 legal code from https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt). Per-file source URLs, sizes and verified SHA-256 in manifest.json. Not yet integrated into playback or the installed application.
+62 unmodified OGG files in assets/audio/kenney-digital-audio/, by Kenney, CC0 1.0 Universal. Official source: https://kenney.nl/assets/digital-audio . Retrieved from the community mirror https://github.com/Mcamento8/open-game-sfx-index on 2026-11-01 because the direct upstream download failed. License text: assets/audio/kenney-digital-audio/LICENSE.txt (official CC0 legal code from https://creativecommons.org/publicdomain/zero/1.0/legalcode.txt). Per-file source URLs, sizes and verified SHA-256 in manifest.json. Five selected OGG files are bundled under app/audio/ for game playback; other files remain source references.
 
 ## Orbitron
 

@@ -32,7 +32,7 @@ function openHome(){
  closeSettingsMenu();closeDiscovery();if(!$('config').hidden)closeSettings();if(window.orbitzFeaturesOpen?.())featureClose(false);
  stopPlaybackRetry();if(playerReady)youtubePlayer?.pauseVideo?.();$('screen').hidden=true;panel.hidden=false;window.orbitzGamesHome=true;sync();
  window.orbitzRunnerGameChanged?.();window.orbitzMazePauseChanged?.();window.orbitzInvadersActivate?.();window.orbitzAsteroidsActivate?.();window.orbitzBreakerActivate?.();window.orbitzLanderActivate?.();window.orbitzSyncGamePause?.();
- window.orbitzRefreshResume?.().catch(()=>{});notifyWindowState();syncControls();home.querySelector('.game-card').focus({preventScroll:true});
+ window.orbitzRefreshResume?.().catch(()=>{});notifyWindowState();syncChrome();home.querySelector('.game-card').focus({preventScroll:true});
 }
 back.onclick=openHome;$('home-logo').onclick=openHome;
 const menu=document.createElement('button');menu.type='button';menu.setAttribute('role','menuitem');menu.onclick=()=>{closeSettingsMenu();openHome()};$('settings-menu').append(menu);

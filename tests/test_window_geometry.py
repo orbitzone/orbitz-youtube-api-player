@@ -101,4 +101,13 @@ class GeometryTests(unittest.TestCase):
         source=(ROOT/'app/youtube-wrapper.py').read_text()
         self.assertIn("'enabled':not bool(geometry.saved)",source)
 
+
+    def test_collapsed_or_partly_offscreen_geometry_is_recovered(self):
+        area=SimpleNamespace(x=0,y=0,width=1920,height=1080)
+        result=geometry.visible_geometry({**VALUE,'x':11,'y':1070,'width':1069,'height':1},[area])
+        self.assertEqual(result['height'],280);self.assertLessEqual(result['y']+result['height'],1080)
+        tracker,window,_=self.tracker()
+        window.get_window.return_value.get_frame_extents.return_value=SimpleNamespace(x=11,y=1070,width=1069,height=1)
+        self.assertIsNone(tracker.snapshot())
+
 if __name__=='__main__':unittest.main()

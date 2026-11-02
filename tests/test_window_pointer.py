@@ -4,7 +4,7 @@ from pathlib import Path
 import sys
 from types import SimpleNamespace
 import unittest
-from unittest.mock import Mock
+from unittest.mock import Mock,patch
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]/'app'))
 from window_pointer import PointerWatch
 
@@ -22,11 +22,11 @@ class PointerTests(unittest.TestCase):
 
     def payload(self,watch):
         script=watch.view.run_javascript.call_args.args[0]
-        return json.loads(script.split('orbitzAutoPointer(',1)[1].split(');',1)[0])
+        return json.loads(script.split('orbitzChromePointer(',1)[1].split(');',1)[0])
 
     def test_native_coordinates_include_the_iframe_and_scale_to_viewport(self):
         watch=self.setup_watch();watch.configure({'enabled':True,'sequence':1})
-        self.assertEqual(self.payload(watch),dict(sequence=1,inside=True,x=.5,y=.4))
+        self.assertEqual(self.payload(watch),dict(sequence=1,inside=True,x=.5,y=.4,idle=False))
         pointer=watch.window.get_display.return_value.get_default_seat.return_value.get_pointer.return_value
         pointer.get_position.return_value=(None,50,400);watch.sample()
         self.assertFalse(self.payload(watch)['inside'])
@@ -62,3 +62,22 @@ class PointerTests(unittest.TestCase):
         watch.configure({'enabled':True,'sequence':1});self.assertEqual(watch.source,17)
         watch.destroyed();self.assertEqual(watch.source,0);self.assertFalse(watch.sample())
         watch.configure({'enabled':True,'sequence':2});self.assertEqual(watch.source,0)
+
+    def test_motion_within_same_zone_does_not_wake_webkit(self):
+        watch=self.setup_watch();watch.set_content_bounds(dict(left=0,top=.2,right=1,bottom=.9));watch.configure({'enabled':True,'sequence':1});watch.view.run_javascript.reset_mock()
+        pointer=watch.window.get_display.return_value.get_default_seat.return_value.get_pointer.return_value
+        for x in range(200,600,10):pointer.get_position.return_value=(None,x,450);watch.sample()
+        watch.view.run_javascript.assert_not_called()
+        pointer.get_position.return_value=(None,450,220);watch.sample();self.assertEqual(watch.view.run_javascript.call_count,1)
+        pointer.get_position.return_value=(None,40,220);watch.sample();self.assertEqual(watch.view.run_javascript.call_count,2)
+
+    def test_idle_threshold_and_motion_resume_with_single_notification(self):
+        with patch('window_pointer.time.monotonic',return_value=10) as clock:
+            watch=self.setup_watch();watch.set_content_bounds(dict(left=0,top=.2,right=1,bottom=.9));watch.configure({'enabled':True,'sequence':1});watch.view.run_javascript.reset_mock()
+            clock.return_value=14.99;watch.sample();watch.view.run_javascript.assert_not_called()
+            clock.return_value=15;watch.sample();self.assertTrue(self.payload(watch)['idle']);self.assertEqual(watch.view.run_javascript.call_count,1)
+            clock.return_value=20;watch.sample();self.assertEqual(watch.view.run_javascript.call_count,1)
+            pointer=watch.window.get_display.return_value.get_default_seat.return_value.get_pointer.return_value
+            pointer.get_position.return_value=(None,451,400);watch.sample();self.assertFalse(self.payload(watch)['idle']);self.assertEqual(watch.view.run_javascript.call_count,2)
+            clock.return_value=24.99;watch.sample();self.assertEqual(watch.view.run_javascript.call_count,2)
+            clock.return_value=25;watch.sample();self.assertTrue(self.payload(watch)['idle'])

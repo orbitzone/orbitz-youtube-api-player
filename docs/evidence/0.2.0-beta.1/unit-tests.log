@@ -1,0 +1,124 @@
+GSETTINGS_BACKEND=memory python3 -m unittest discover -s tests -v
+test_broadcasts_and_podcast_evidence_are_filtered (test_category_filters.CategoryTests) ... ok
+test_fallback_keeps_category_and_cache_metadata (test_category_filters.CategoryTests) ... ok
+test_native_drag_keeps_hidden_mode_and_validates_coordinates (test_fit_player.FitPlayerTests) ... ok
+test_api_maps_search_modes_to_official_filters (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_document_get_keeps_token_boundary (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_feature_script_requires_the_document_token (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_game_audio_requires_token_and_exact_asset_path (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_invalid_search_and_removed_comments_endpoint (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_json_body_must_be_an_object_before_dispatch (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_language_change_waits_for_main_thread_settings_write (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_language_setting_accepts_only_supported_locales (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_local_key_permissions_and_validation (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_local_library_uses_the_same_origin_boundary (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_loopback_origin_and_token_required_before_api (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_native_ui_actions_are_size_and_origin_bounded (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_old_recommendation_cache_is_upgraded_once (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_runner_best_score_persists_atomically_and_never_decreases (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_runner_score_endpoint_reads_and_saves_valid_record (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_search_and_missing_key_contract (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_search_modes_are_validated_and_cached_separately (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_search_requests_and_preserves_twenty_results_for_every_filter (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_short_api_response_is_returned_without_fabricating_videos (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_successful_search_updates_local_profile_and_recommendations_receive_mode (test_frontend_modules.YouTubeBoundaryTests) ... ok
+test_independent_scores_and_validation (test_invaders_score.InvadersScoreTests) ... ok
+test_export_import_merge_and_cancel (test_library_transfer.TransferTests) ... ok
+test_file_only_portal_export_falls_back_to_the_selected_file (test_library_transfer.TransferTests) ... ok
+test_invalid_and_oversized_files_do_not_modify_database (test_library_transfer.TransferTests) ... ok
+test_bookmarks_export_excludes_secrets_preferences_resume_queue (test_local_library.LibraryTests) ... ok
+test_database_symlink_is_not_followed (test_local_library.LibraryTests) ... ok
+test_game_sound_preference_persists_and_requires_boolean (test_local_library.LibraryTests) ... ok
+test_game_volume_boundaries_and_type (test_local_library.LibraryTests) ... ok
+test_invalid_import_is_atomic_and_never_replaces_existing_library (test_local_library.LibraryTests) ... ok
+test_live_radio_and_unknown_duration_remain_available_from_start (test_local_library.LibraryTests) ... ok
+test_parallel_appends_and_consumers_never_lose_or_duplicate_queue_items (test_local_library.LibraryTests) ... ok
+test_preferences_roundtrip_and_private_file (test_local_library.LibraryTests) ... ok
+test_queue_reorder_remove_and_next_are_transactional (test_local_library.LibraryTests) ... ok
+test_remember_before_playback_short_paused_stopped_and_finished_video (test_local_library.LibraryTests) ... ok
+test_resume_always_keeps_the_video_and_validates_position (test_local_library.LibraryTests) ... ok
+test_resume_metadata_preserves_position_and_rejects_stale_video (test_local_library.LibraryTests) ... ok
+test_retired_preferences_are_pruned_without_losing_current_values (test_local_library.LibraryTests) ... ok
+test_commands_and_stale_or_invalid_seek (test_media_controls.MediaTests) ... ok
+test_properties_metadata_and_position_are_event_driven (test_media_controls.MediaTests) ... ok
+test_state_validation_and_volume (test_media_controls.MediaTests) ... ok
+test_track_paths_are_valid_and_collision_free (test_media_controls.MediaTests) ... ok
+test_new_selection_before_player_ready_is_not_overwritten_by_old_track (test_native_resume.NativeResumeTests) ... ok
+test_paused_playing_finished_stopped_and_live_are_never_discarded (test_native_resume.NativeResumeTests) ... ok
+test_reopening_and_closing_without_playback_retains_the_offer (test_native_resume.NativeResumeTests) ... ok
+test_cache_is_profile_specific_category_specific_private_and_coalesced (test_recommendations.RecommendationTests) ... ok
+test_dedup_bound_expiry_and_revision_protect_clear_from_inflight_search (test_recommendations.RecommendationTests) ... ok
+test_each_category_gets_twenty_generic_results_without_profile (test_recommendations.RecommendationTests) ... ok
+test_empty_results_are_cached_and_live_cache_expires (test_recommendations.RecommendationTests) ... ok
+test_existing_favorites_seed_suggestions_before_any_new_search (test_recommendations.RecommendationTests) ... ok
+test_explicit_interests_and_category_recent_searches_are_combined (test_recommendations.RecommendationTests) ... ok
+test_generic_filters_and_podcast_or_terms_remain_correct (test_recommendations.RecommendationTests) ... ok
+test_invalid_preferences_modes_and_urls (test_recommendations.RecommendationTests) ... ok
+test_recent_opt_out_and_clear_keep_interests_and_favorites (test_recommendations.RecommendationTests) ... ok
+test_batch_cache_zero_and_unavailable (test_video_likes.LikesTests) ... ok
+test_invalid_ids_do_not_access_network (test_video_likes.LikesTests) ... ok
+test_collapsed_or_partly_offscreen_geometry_is_recovered (test_window_geometry.GeometryTests) ... ok
+test_destroy_saves_cached_bounds_and_removes_pending_sources (test_window_geometry.GeometryTests) ... ok
+test_duplicate_notifications_do_not_restart_deadline_or_schedule_saved_bounds (test_window_geometry.GeometryTests) ... ok
+test_invalid_geometry_never_overwrites_a_preference (test_window_geometry.GeometryTests) ... ok
+test_maximized_and_temporary_fullscreen_do_not_replace_normal_bounds (test_window_geometry.GeometryTests) ... ok
+test_move_and_resize_are_debounced_but_close_flushes_latest_immediately (test_window_geometry.GeometryTests) ... ok
+test_negative_monitor_coordinates_are_exact_and_offscreen_recovery_is_bounded (test_window_geometry.GeometryTests) ... ok
+test_private_atomic_roundtrip_and_corrupt_input (test_window_geometry.GeometryTests) ... ok
+test_restore_does_not_overwrite_saved_state_with_startup_configure_events (test_window_geometry.GeometryTests) ... ok
+test_restore_measures_decorations_and_keeps_exact_external_bounds (test_window_geometry.GeometryTests) ... ok
+test_symlink_is_not_followed_and_failed_replace_preserves_existing_value (test_window_geometry.GeometryTests) ... ok
+test_idle_threshold_and_motion_resume_with_single_notification (test_window_pointer.PointerTests) ... ok
+test_motion_within_same_zone_does_not_wake_webkit (test_window_pointer.PointerTests) ... ok
+test_native_coordinates_include_the_iframe_and_scale_to_viewport (test_window_pointer.PointerTests) ... ok
+test_reconfiguration_removes_timer_and_rejects_obsolete_sequences (test_window_pointer.PointerTests) ... ok
+test_reload_and_destruction_cleanup_observer (test_window_pointer.PointerTests) ... ok
+test_stationary_pointer_does_not_wake_webkit_and_outside_movement_is_coalesced (test_window_pointer.PointerTests) ... ok
+test_fullscreen_shortcuts_remain_available (test_window_shortcuts.WindowShortcutTests) ... ok
+test_media_shortcuts_reach_native_controller_and_text_navigation_stays_available (test_window_shortcuts.WindowShortcutTests) ... ok
+test_unassigned_control_shortcut_is_not_intercepted (test_window_shortcuts.WindowShortcutTests) ... ok
+test_active_sizes_respect_workarea_with_a_small_monitor_floor (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_copy_link_action_accepts_only_youtube_video_urls (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_external_link_bridge_rejects_untrusted_hosts_and_uri_forms (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_flatpak_icon_has_square_canvas (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_flatpak_manifest_exposes_only_the_required_audio_socket (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_idle_runner_is_local_accessible_and_stops_when_playback_starts (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_idle_window_already_fits_four_search_results (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_manual_height_change_disables_auto_resize_but_programmatic_change_does_not (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_native_actions_are_dispatched_only_after_local_http_validation (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_runner_focus_and_obstacle_types_preserve_game_rules (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_unknown_layout_state_is_rejected (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_web_layout_stretches_idle_runner_and_grows_only_for_player (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_widget_requests_centered_initial_placement (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+test_youtube_iframe_fullscreen_is_enabled_in_webkit_and_handled_by_gtk (test_youtube_window_sizing.YouTubeWindowSizingTests) ... ok
+
+----------------------------------------------------------------------
+Ran 92 tests in 2.669s
+
+OK
+OK: asteroid inertia, turning, wrapping, splitting, cooldown, lives, waves and resize.
+OK: YouTube external link remains stable for a selected video across transient playback states.
+OK: Breaker physics, damage, powers, waves and Lander fuel, safe/unsafe landings, missions and resize.
+OK: mouse-only Lander guidance brakes, lands safely and respects fuel.
+OK: Lander explosion animates on impact and final life, and resets for the next ship.
+OK: four inline SVG filters, compact breakpoint, localized accessible names/tooltips, removed comments and packaged icon licenses.
+OK: video selection does not refocus/reopen search; redundant modal closes do not generate chrome transitions.
+OK: every real control resumes each of six games once; repeat, modifiers and inputs excluded.
+OK: original retro sound synthesis, finite samples, headroom, attack/release and alternating dot timbres.
+OK: invaders movement, firing/cooldown, waves, bunkers, power-ups, lives, invasion, UFO and continuous descent.
+OK: responsive landscape/portrait/ultrawide layout, full-area coverage, persistent damage/score and safe resize.
+OK: live YouTube UI/attributes/status, localized filter names/tooltips, external text and playback preserved; detached bindings pruned.
+OK: official player API is loaded on first video selection, avoiding work during idle startup.
+OK: resume snapshots keep track identity, progress timer is bounded, and obsolete player events cannot consume queue.
+OK: maze reachability, walls, dots, power, ghost contacts, lives and win state.
+OK: fractional movement, instant reversal, buffered center turns, wall rejection, time independence and final life.
+OK: four portal entrances, smooth traversal/reversal, cherry spawn/expiry/bonus and progressive levels preserving lives and score.
+OK: six unique connected maps/colors, all portals and spawns reachable, phase cycling and full-width responsive board.
+OK: YouTube settings are a fixed accessible modal; search results open as an outside-dismissible dropdown.
+OK: copy-link stays stable across playback, buffering, pause, end and error events; header reserves its space.
+OK: recommendations load in all four categories; stale and aborted responses never overwrite the active tab.
+OK: invisible runner performs no canvas drawing/layout; unchanged size avoids reallocating its canvas.
+OK: choosing a YouTube result closes the discovery panel before playback.
+OK: runner collisions handle flying mosquitoes, record values are valid, and UFO phases, targets and cached drawing work.
+OK: leaving a pending search for an empty Shorts tab cancels the request and restores the Search button.
+OK: Shorts, Live and Podcasts send distinct modes; empty searches request category recommendations; four-tab semantics and keyboard navigation hold.

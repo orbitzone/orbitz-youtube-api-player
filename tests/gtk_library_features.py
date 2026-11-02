@@ -17,13 +17,13 @@ sys.path.insert(0,str(root/'app'))
 import youtube_server as backend
 backend.recommendations=lambda *args:{'items':[],'basis':'popular','terms':[]}
 import local_library
-local_library.action({'op':'preferences','values':{'always_above':True,'auto_controls':True}})
+local_library.action({'op':'preferences','values':{'always_above':True}})
 local_library.action({'op':'progress','video':{'id':'abcdefghijk','title':'Synthetic resume'},'position':42,'duration':300})
 import gi
 gi.require_version('Gtk','3.0');gi.require_version('WebKit2','4.1')
 from gi.repository import Gtk,GLib,WebKit2,Gdk
 token=secrets.token_urlsafe(24);server=ThreadingHTTPServer(('127.0.0.1',0),backend.make_handler(token));server.cache={};server.daemon_threads=True
-server.ui_actions={'window-state':lambda data:None,'always-above':lambda data:None,'auto-controls':lambda data:None,'media-state':lambda data:None,'diagnostics':lambda data:{'synthetic':True}}
+server.ui_actions={'window-state':lambda data:None,'always-above':lambda data:None,'media-state':lambda data:None,'diagnostics':lambda data:{'synthetic':True}}
 threading.Thread(target=server.serve_forever,daemon=True).start()
 manager=WebKit2.UserContentManager();manager.register_script_message_handler('check')
 view=WebKit2.WebView(user_content_manager=manager);window=Gtk.Window(title='Biblioteca — teste temporário');window.set_default_size(int(os.environ.get('ORBITZ_TEST_WIDTH','980')),int(os.environ.get('ORBITZ_TEST_HEIGHT','650')));window.add(view)
@@ -34,9 +34,9 @@ script='''(async()=>{
  const wait=()=>new Promise(resolve=>setTimeout(resolve,100));
  featureThumb=item=>{const placeholder=document.createElement('div');placeholder.className='feature-thumb';placeholder.style.background='linear-gradient(135deg,#324660,#172535)';return placeholder};
  window.orbitzSetLanguage({locale:'pt-BR',catalog:CATALOG});
- for(let i=0;i<30&&(!featureState.resume||!alwaysAbove||!autoControlsEnabled);i++)await wait();
- assert(!$('feature-resume').hidden,'resume offer on startup');assert(autoControlsBlocked(),'resume offer protected from automatic hiding');
- featureDismissResume();assert($('feature-resume').hidden,'not now hides only this opening');assert((await api('local-state',{})).resume,'not now never deletes previous video');featureResumeDismissed=false;featureRender();assert(!$('feature-resume').hidden,'next opening can offer same video again');assert(alwaysAbove&&autoControlsEnabled,'saved preferences restored');assert($('controls-shortcut').getAttribute('aria-disabled')==='true','auto mode disables shortcut after restart');
+ for(let i=0;i<30&&(!featureState.resume||!alwaysAbove);i++)await wait();
+ assert(!$('feature-resume').hidden,'resume offer on startup');
+ featureDismissResume();assert($('feature-resume').hidden,'not now hides only this opening');assert((await api('local-state',{})).resume,'not now never deletes previous video');featureResumeDismissed=false;featureRender();assert(!$('feature-resume').hidden,'next opening can offer same video again');assert(alwaysAbove,'saved preferences restored');
  playerReady=true;let position=42;
  youtubePlayer={getVideoData:()=>({video_id:selected,title:'Synthetic player'}),getCurrentTime:()=>position,getDuration:()=>300,getVolume:()=>70,isMuted:()=>false,getPlayerState:()=>2,playVideo(){},pauseVideo(){},seekTo(value){position=value}};
  play=(id,title)=>{window.orbitzBeforeVideo();selected=id;window.orbitzOnVideo(id,title);$('screen').hidden=false;$('runner').hidden=true;};
@@ -52,8 +52,7 @@ script='''(async()=>{
  renderResults([{id:'abcdefghijk',title:'Queued from search',channel:'Synthetic',thumbnail:''}]);$('results').querySelector('.feature-result-queue').click();await wait();await featureChain;assert(featureState.queue.length===1&&selected==='123456789_-','search queue button does not interrupt');
  featureOpen('diagnostics');await wait();assert($('feature-diagnostics').textContent.includes('synthetic'),'diagnostics on demand');
  featureOpen('shortcuts');assert($('feature-list').textContent.includes('Ctrl+'),'shortcut help');
- featureClose();$('feature-hide-delay').value='3';$('feature-show-delay').value='0.8';await featureSaveDelays.onclick();
- assert(autoHideDelay===3000&&autoShowDelay===800,'adjustable delays');
+ featureClose();
  window.orbitzSetLanguage({locale:'en-US',catalog:ENGLISH});assert(featureHeader.getAttribute('aria-label')==='Library','live language bindings');
  featurePlay(featureState.favorites[0]);await featureChain;featureOpen('favorites');
  const star=$('feature-current-actions').querySelector('button');assert(star.getAttribute('aria-pressed')==='true','current favorite visibly marked');star.focus();star.click();await wait();await featureChain;assert(document.activeElement===$('feature-current-actions').querySelector('button'),'focus retained after favorite mutation');assert(featureState.favorites.length===0,'star removes favorite');

@@ -26,7 +26,7 @@ const node = () => ({
   contains(target) { return this.children?.includes(target) || target === this; },
   querySelectorAll() { return focusables; },
 });
-const ids = ['runner','settings-menu','new-window','open-settings','controls-shortcut','auto-controls','auto-controls-check','always-above','always-above-check','settings', 'config', 'config-status', 'language', 'key', 'config-close', 'save', 'query', 'search', 'submit', 'discovery', 'screen', 'copy-video-link', 'player-action-status'];
+const ids = ['runner','settings-menu','new-window','open-settings','always-above','always-above-check','settings', 'config', 'config-status', 'language', 'key', 'config-close', 'save', 'query', 'search', 'submit', 'discovery', 'screen', 'copy-video-link', 'player-action-status'];
 const nodes = new Map(ids.map(id => [id, node()]));
 const focusables = ['config-close', 'language', 'key', 'save', 'credential-link'].map(() => node());
 nodes.get('config').contains = target => focusables.includes(target) || target === nodes.get('config');

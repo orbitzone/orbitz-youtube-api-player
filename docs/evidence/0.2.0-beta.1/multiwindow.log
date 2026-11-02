@@ -1,0 +1,6 @@
+Gtk-Message: 01:09:09.987: Failed to load module "canberra-gtk-module"
+<source>/app/youtube-wrapper.py:133: DeprecationWarning: WebKit2.WebView.run_javascript is deprecated
+  view.run_javascript('window.orbitzWindowLocked='+str(bool(event.new_window_state & (Gdk.WindowState.FULLSCREEN|Gdk.WindowState.MAXIMIZED))).lower()+';',None,None,None)
+<source>/tests/gtk_desktop_new_window.py:27: PyGIDeprecationWarning: Gio.DesktopAppInfo is deprecated; use GioUnix.DesktopAppInfo instead
+  Gio.DesktopAppInfo.new_from_filename(str(desktop)).launch_action('new-window',None)
+OK: desktop action launches --new-window into the existing application and creates a second window.

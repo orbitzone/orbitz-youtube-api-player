@@ -1,0 +1,8 @@
+Gtk-Message: 01:08:23.257: Failed to load module "canberra-gtk-module"
+<source>/app/youtube-wrapper.py:133: DeprecationWarning: WebKit2.WebView.run_javascript is deprecated
+  view.run_javascript('window.orbitzWindowLocked='+str(bool(event.new_window_state & (Gdk.WindowState.FULLSCREEN|Gdk.WindowState.MAXIMIZED))).lower()+';',None,None,None)
+<source>/app/youtube-wrapper.py:98: DeprecationWarning: Gdk.Screen.get_monitor_at_window is deprecated
+  screen=window.get_screen();index=screen.get_monitor_at_window(window.get_window())
+<source>/app/youtube-wrapper.py:99: DeprecationWarning: Gdk.Screen.get_monitor_workarea is deprecated
+  return screen.get_monitor_workarea(index).height
+OK: static 2x2 home cards, game selection/return and resume thumbnail.

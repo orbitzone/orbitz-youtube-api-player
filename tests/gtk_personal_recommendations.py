@@ -13,7 +13,7 @@ def search(query=None,mode='videos',locale=None):
     calls.append((query,mode));return [dict(id=f'{i:011d}',title=f'{mode} synthetic {i}',channel='Synthetic',thumbnail='') for i in range(20)]
 youtube_api.search=search;youtube_server.search=search
 token=secrets.token_urlsafe(24);server=ThreadingHTTPServer(('127.0.0.1',0),youtube_server.make_handler(token));server.cache={};server.daemon_threads=True
-server.ui_actions={'window-state':lambda data:None,'always-above':lambda data:None,'auto-controls':lambda data:None,'media-state':lambda data:None}
+server.ui_actions={'window-state':lambda data:None,'always-above':lambda data:None,'media-state':lambda data:None}
 threading.Thread(target=server.serve_forever,daemon=True).start()
 import gi
 gi.require_version('Gtk','3.0');gi.require_version('WebKit2','4.1')

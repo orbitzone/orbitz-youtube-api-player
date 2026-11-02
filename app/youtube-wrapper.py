@@ -52,31 +52,6 @@ def user_resized_from_target(current_height, target_height, programmatic=False):
     """Detect deliberate height changes without mistaking our resize for one."""
     return target_height is not None and not programmatic and abs(current_height-target_height)>8
 
-def controls_request(data):
-    """Validate the optional chrome action before scheduling native GTK work."""
-    if 'hide_controls' not in data:return None
-    hidden=data['hide_controls'];sequence=data.get('controls_sequence')
-    if type(hidden) is not bool or type(sequence) is not int or not 0<=sequence<=2**53-1:
-        raise ValueError('Estado de controles inválido.')
-    if hidden and data.get('state') not in ('idle','player'):raise ValueError('Estado de controles inválido.')
-    rect=data.get('player_rect') if hidden else None
-    if hidden:
-        if not isinstance(rect,dict):raise ValueError('Dimensões do vídeo inválidas.')
-        keys=('left','top','width','height','viewport_width','viewport_height')
-        if any(type(rect.get(key)) not in (int,float) or not -32768<=rect[key]<=32768 or not math.isfinite(rect[key]) for key in keys):
-            raise ValueError('Dimensões do vídeo inválidas.')
-        if (not 0<rect['viewport_width']<=32768 or not 0<rect['viewport_height']<=32768 or
-                rect['left']<0 or rect['top']<0 or rect['width']<=0 or rect['height']<=0 or
-                rect['left']+rect['width']>rect['viewport_width']+1 or rect['top']+rect['height']>rect['viewport_height']+1):
-            raise ValueError('Dimensões do vídeo inválidas.')
-    return hidden,sequence,rect
-
-
-def player_window_rect(width,height,rect):
-    """Convert CSS pixels into the native client coordinate system (including scaling)."""
-    sx=width/rect['viewport_width'];sy=height/rect['viewport_height']
-    return (max(1,round(rect['width']*sx)),max(1,round(rect['height']*sy)),round(rect['left']*sx),round(rect['top']*sy))
-
 def main():
     import gi
     gi.require_version('Gtk','3.0');gi.require_version('WebKit2','4.1')
@@ -95,9 +70,17 @@ def main():
         server=ThreadingHTTPServer(('127.0.0.1',0),make_handler(token));server.cache={};server.daemon_threads=True
         threading.Thread(target=server.serve_forever,daemon=True).start()
         window=ui.widget(Gtk.ApplicationWindow,application=app,title=ui.msg('youtube.window_title'))
+        window.set_decorated(False)
+        visual=window.get_screen().get_rgba_visual()
+        if visual:window.set_visual(visual)
+        window.set_app_paintable(True)
+        window.set_name('orbitz-player-window')
+        transparent_css=Gtk.CssProvider();transparent_css.load_from_data(b'#orbitz-player-window { background-color: transparent; }')
+        window.get_style_context().add_provider(transparent_css,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         display=Gdk.Display.get_default()
         monitor=display.get_monitor_at_point(*display.get_default_seat().get_pointer().get_position()[1:]) or display.get_primary_monitor()
         area=monitor.get_workarea() if monitor else Gdk.Rectangle(x=0,y=0,width=1280,height=900)
+        window.set_size_request(min(420,area.width),min(280,area.height))
         initial_height=target_window_height('idle',area.height)
         initial_width=min(1100,max(1,area.width-48))
         geometry=GeometryTracker(window,Gtk,Gdk,GLib,[display.get_monitor(i).get_workarea() for i in range(display.get_n_monitors())])
@@ -105,7 +88,7 @@ def main():
             window.set_position(Gtk.WindowPosition.CENTER)
             window.set_default_size(initial_width,initial_height)
         window.set_resizable(True)
-        chrome={'hidden':False,'sequence':-1,'shortcut_down':False,'geometry':None,'transition':False}
+        shortcut_state={'media_keys':set()}
         resize_state={'enabled':not bool(geometry.saved),'target':initial_height,'programmatic':False,'page':'idle','source':0}
         def window_size_locked():
             native=window.get_window()
@@ -121,7 +104,7 @@ def main():
             return False
         def apply_page_size():
             resize_state['source']=0
-            if chrome['hidden'] or chrome['transition'] or not resize_state['enabled'] or window_size_locked():return False
+            if not resize_state['enabled'] or window_size_locked():return False
             width,current=window.get_size();target=target_window_height(resize_state['page'],workarea_height())
             if user_resized_from_target(current,resize_state['target'],resize_state['programmatic']):
                 resize_state['enabled']=False
@@ -139,7 +122,7 @@ def main():
             if resize_state['source']:GLib.source_remove(resize_state['source'])
             resize_state['source']=GLib.timeout_add(90,apply_page_size)
         def configure_size(_window,event):
-            if chrome['hidden'] or chrome['transition'] or window_size_locked():return False
+            if window_size_locked():return False
             if resize_state['programmatic']:
                 if abs(event.height-resize_state['target'])<=3:resize_state['programmatic']=False
             elif resize_state['enabled'] and (user_resized_from_target(event.height,resize_state['target']) or event.width!=initial_width):
@@ -148,11 +131,13 @@ def main():
         window.connect('configure-event',configure_size)
         def window_state_changed(_window,event):
             view.run_javascript('window.orbitzWindowLocked='+str(bool(event.new_window_state & (Gdk.WindowState.FULLSCREEN|Gdk.WindowState.MAXIMIZED))).lower()+';',None,None,None)
+            view.run_javascript('window.orbitzWindowMaximized='+str(bool(event.new_window_state & Gdk.WindowState.MAXIMIZED)).lower()+';window.orbitzSyncWindowButtons?.();',None,None,None)
             if not event.new_window_state & (Gdk.WindowState.FULLSCREEN|Gdk.WindowState.MAXIMIZED):
                 request_page_size(resize_state['page'])
             return False
         window.connect('window-state-event',window_state_changed)
         view=WebKit2.WebView()
+        view.set_background_color(Gdk.RGBA(red=0,green=0,blue=0,alpha=0))
         settings=view.get_settings()
         settings.set_property('enable-developer-extras',False)
         # WebKit disables the Fullscreen API by default; YouTube's iframe
@@ -172,63 +157,13 @@ def main():
             succeeded,result=outcome[0]
             if not succeeded:raise RuntimeError('Não foi possível concluir a ação da interface.') from result
             return result
-        def end_controls_transition(sequence):
-            if chrome['sequence']==sequence:
-                chrome['transition']=False;resize_state['programmatic']=False
-            return False
         def set_window_state(data):
             state=data.get('state')
             if state not in ('idle','settings','panel','player'):raise ValueError('Estado de janela inválido.')
-            requested=controls_request(data)
-            def apply(_state):
-                if requested is None:
-                    request_page_size(_state);return
-                hidden,sequence,rect=requested
-                if sequence<=chrome['sequence']:return
-                chrome['sequence']=sequence;resize_state['page']=_state
-                if chrome['hidden']==hidden:return
-                if resize_state['source']:GLib.source_remove(resize_state['source']);resize_state['source']=0
-                chrome['transition']=True;resize_state['programmatic']=True
-                window.set_gravity(Gdk.Gravity.STATIC)
-                if hidden and not window_size_locked():
-                    width,height=window.get_size()
-                    chrome['geometry']={'size':(width,height),'position':window.get_position(),'root':window.get_window().get_root_coords(0,0)}
-                    ox,oy=window.get_window().get_root_coords(0,0)
-                    video_width,video_height,left,top=player_window_rect(width,height,rect)
-                    resize_state['target']=video_height
-                    window.set_decorated(False);window.resize(video_width,video_height)
-                    window.move(ox+left,oy+top)
-                    target_root=(ox+left,oy+top)
-                else:
-                    target_root=None
-                    if not window_size_locked():window.set_decorated(not hidden)
-                    if not hidden and chrome['geometry']:
-                        saved=chrome['geometry']
-                        origin=chrome.pop('resize_origin',None)
-                        if origin:
-                            width,height=window.get_size();ox,oy=window.get_window().get_root_coords(0,0)
-                            dx,dy=ox-origin['root'][0],oy-origin['root'][1]
-                            saved={'size':(max(1,saved['size'][0]+width-origin['size'][0]),max(1,saved['size'][1]+height-origin['size'][1])),
-                                   'root':(saved['root'][0]+dx,saved['root'][1]+dy),'position':(saved['position'][0]+dx,saved['position'][1]+dy)}
-                        target_root=saved['root'];resize_state['target']=saved['size'][1]
-                        window.resize(*saved['size']);window.move(*saved['position']);chrome['geometry']=None
-                chrome['hidden']=hidden
-                # Decoration changes are asynchronous under X11/XWayland. Anchor
-                # the client origin after the WM applies its new frame extents.
-                if target_root is not None:
-                    attempts=0
-                    def anchor_content():
-                        nonlocal attempts
-                        if chrome['sequence']!=sequence or not window.get_window():return False
-                        attempts+=1
-                        native=window.get_window();x,y=native.get_root_coords(0,0)
-                        dx,dy=target_root[0]-x,target_root[1]-y
-                        if dx or dy:
-                            window.move(*target_root)
-                        return attempts<12
-                    GLib.timeout_add(16,anchor_content)
-                GLib.timeout_add(900,end_controls_transition,sequence)
-            dispatch_to_gtk(apply,state)
+            def apply(_):
+                if 'content_bounds' in data:chrome_watch.set_content_bounds(data['content_bounds'])
+                request_page_size(state)
+            dispatch_to_gtk(apply,None)
         def fit_player(data):
             edge=data.get('edge');names={'nw':'NORTH_WEST','n':'NORTH','ne':'NORTH_EAST','w':'WEST','e':'EAST','sw':'SOUTH_WEST','s':'SOUTH','se':'SOUTH_EAST'}
             if not isinstance(edge,str) or edge not in names:raise ValueError('Alça inválida.')
@@ -237,14 +172,32 @@ def main():
             x,y,vw,vh=values
             if not vw or not vh or x>vw or y>vh:raise ValueError('Coordenadas inválidas.')
             def begin(_):
-                if window_size_locked() or chrome['transition']:return {'applied':False}
+                if window_size_locked():return {'applied':False}
                 resize_state['enabled']=False
                 width,height=window.get_size();ox,oy=window.get_window().get_root_coords(0,0)
-                if chrome['hidden'] and chrome['geometry'] and not chrome.get('resize_origin'):
-                    chrome['resize_origin']={'size':(width,height),'root':(ox,oy)}
                 window.begin_resize_drag(getattr(Gdk.WindowEdge,names[edge]),1,round(ox+x*width/vw),round(oy+y*height/vh),Gdk.CURRENT_TIME)
                 return {'applied':True}
             return dispatch_to_gtk(begin,None)
+        def window_action(data):
+            action=data.get('command')
+            if action not in ('minimize','maximize','close','move'):raise ValueError('Comando inválido.')
+            if action=='move':
+                values=[data.get(k) for k in ('x','y','viewport_width','viewport_height')]
+                if any(type(v) not in (int,float) or not math.isfinite(v) or not 0<=v<=32768 for v in values):raise ValueError('Coordenadas inválidas.')
+                x,y,vw,vh=values
+                if not vw or not vh or x>vw or y>vh:raise ValueError('Coordenadas inválidas.')
+            def apply(_):
+                if action=='minimize':window.iconify()
+                elif action=='maximize':
+                    native=window.get_window()
+                    if native.get_state() & Gdk.WindowState.MAXIMIZED:window.unmaximize()
+                    elif not native.get_state() & Gdk.WindowState.FULLSCREEN:window.maximize()
+                elif action=='close':GLib.timeout_add(50,lambda:(window.close(),False)[1])
+                elif not window_size_locked():
+                    width,height=window.get_size();ox,oy=window.get_window().get_root_coords(0,0)
+                    window.begin_move_drag(1,round(ox+x*width/vw),round(oy+y*height/vh),Gdk.CURRENT_TIME)
+                return {'ok':True}
+            return dispatch_to_gtk(apply,None)
         def open_external(data):
             uri=data.get('uri')
             if not isinstance(uri,str) or not is_allowed_external_uri(uri):raise ValueError('Link externo inválido.')
@@ -263,10 +216,7 @@ def main():
             if type(enabled) is not bool:raise ValueError('Estado inválido.')
             dispatch_to_gtk(window.set_keep_above,enabled)
             local_library.action({'op':'preferences','values':{'always_above':enabled}})
-        pointer_watch=PointerWatch(window,view,GLib,Gdk)
-        def set_auto_controls(data):
-            dispatch_to_gtk(pointer_watch.configure,data)
-            local_library.action({'op':'preferences','values':{'auto_controls':data['enabled']}})
+        chrome_watch=PointerWatch(window,view,GLib,Gdk,callback="orbitzChromePointer",interval=100)
         from media_controls import MediaControls
         media=MediaControls(window,view,instance=instance)
         def media_update(data):return dispatch_to_gtk(media.update,data)
@@ -283,7 +233,7 @@ def main():
                 except (OSError,ValueError):pass
             return False
         window.connect('delete-event',save_last_playback)
-        server.ui_actions={'fit-player':fit_player,'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'auto-controls':set_auto_controls,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}
+        server.ui_actions={'window-action':window_action,'fit-player':fit_player,'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}
         def policy(view,decision,kind):
             if kind==WebKit2.PolicyDecisionType.NEW_WINDOW_ACTION:
                 # Never treat a popup requested inside the cross-origin player
@@ -302,13 +252,11 @@ def main():
             if event==WebKit2.LoadEvent.STARTED:
                 save_last_playback()
                 media.update(dict(id='',title='',position=0,duration=0,status='Stopped',volume=1.0,next=False,rate=1.0))
-                pointer_watch.reset()
+                chrome_watch.reset()
             if event==WebKit2.LoadEvent.FINISHED:
-                chrome['sequence']=-1
-                # Every loaded document starts with visible controls; no mouse automation.
-                chrome['hidden']=False;window.set_decorated(True)
-                chrome['shortcut_down']=False;language_changed()
-                view.run_javascript('window.orbitzWindowLocked='+str(window_size_locked()).lower()+';',None,None,None)
+                language_changed()
+                chrome_watch.configure({'enabled':True,'sequence':0})
+                view.run_javascript('window.orbitzWindowLocked='+str(window_size_locked()).lower()+';window.orbitzWindowMaximized='+str(bool(window.get_window() and window.get_window().get_state() & Gdk.WindowState.MAXIMIZED)).lower()+';window.orbitzSyncWindowButtons?.();',None,None,None)
         view.connect('load-changed',page_loaded)
 
         # Do not connect enter/leave-fullscreen: WebKit's default handlers
@@ -316,20 +264,15 @@ def main():
         def key_press(_window,event):
             # Handle this before WebKit dispatches to a focused cross-origin iframe.
             modifiers=event.state & Gtk.accelerator_get_default_mod_mask()
-            if Gdk.keyval_to_lower(event.keyval)==Gdk.KEY_h and modifiers==Gdk.ModifierType.CONTROL_MASK:
-                if not chrome['shortcut_down']:
-                    chrome['shortcut_down']=True
-                    view.run_javascript('window.orbitzToggleControls && window.orbitzToggleControls();',None,None,None)
-                return True
             if Gdk.keyval_to_lower(event.keyval)==Gdk.KEY_t and modifiers==Gdk.ModifierType.CONTROL_MASK:
-                pressed=chrome.setdefault('media_keys',set())
+                pressed=shortcut_state['media_keys']
                 if Gdk.KEY_t not in pressed:
                     pressed.add(Gdk.KEY_t);view.run_javascript('window.orbitzFitPlayer && window.orbitzFitPlayer();',None,None,None)
                 return True
             shortcuts={Gdk.KEY_space:('playpause',None),Gdk.KEY_m:('mute',None)}
             if modifiers==Gdk.ModifierType.CONTROL_MASK and Gdk.keyval_to_lower(event.keyval) in shortcuts:
                 key=Gdk.keyval_to_lower(event.keyval)
-                pressed=chrome.setdefault('media_keys',set())
+                pressed=shortcut_state['media_keys']
                 if key not in pressed:
                     pressed.add(key);command,value=shortcuts[key];media.command(command,value)
                 return True
@@ -337,7 +280,7 @@ def main():
                 if event.keyval in (Gdk.KEY_Left,Gdk.KEY_Right):
                     media.command('seek',-10 if event.keyval==Gdk.KEY_Left else 10);return True
                 if Gdk.keyval_to_lower(event.keyval)==Gdk.KEY_n:
-                    pressed=chrome.setdefault('media_keys',set())
+                    pressed=shortcut_state['media_keys']
                     if Gdk.KEY_n not in pressed:pressed.add(Gdk.KEY_n);media.command('next')
                     return True
             if event.keyval==Gdk.KEY_F11:
@@ -352,12 +295,11 @@ def main():
                 return False
             return False
         def reset_shortcut(*_):
-            chrome['shortcut_down']=False
-            chrome.setdefault('media_keys',set()).clear()
+            shortcut_state['media_keys'].clear()
             return False
         def key_release(_window,event):
-            chrome.setdefault('media_keys',set()).discard(Gdk.keyval_to_lower(event.keyval))
-            if Gdk.keyval_to_lower(event.keyval) in (Gdk.KEY_h,Gdk.KEY_Control_L,Gdk.KEY_Control_R):reset_shortcut()
+            shortcut_state['media_keys'].discard(Gdk.keyval_to_lower(event.keyval))
+            if Gdk.keyval_to_lower(event.keyval) in (Gdk.KEY_Control_L,Gdk.KEY_Control_R):reset_shortcut()
             return False
         window.connect('key-press-event',key_press)
         window.connect('key-release-event',key_release)

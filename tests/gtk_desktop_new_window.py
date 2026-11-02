@@ -18,6 +18,8 @@ launcher=Path(profile.name)/'launcher.py'
 launcher.write_text('import sys\nsys.path.insert(0,'+repr(str(root/'app'))+')\nexec(compile('+repr(source)+','+repr(str(root/'app/youtube-wrapper.py'))+",'exec'),{'__name__':'__main__'})\n")
 desktop=Path(profile.name)/'test.desktop'
 desktop.write_text('[Desktop Entry]\nType=Application\nName=Test\nExec=/usr/bin/python3 '+str(launcher)+'\nActions=new-window;\n[Desktop Action new-window]\nName=New Window\nExec=/usr/bin/python3 '+str(launcher)+' --new-window\n')
+import window_geometry
+window_geometry.save_geometry(dict(version=1,x=11,y=1120,width=1069,height=1,maximized=False))
 errors=[];done=[]
 def launch():
     app=Gio.Application.get_default()
@@ -27,6 +29,9 @@ def launch():
     return False
 def verify():
     app=Gio.Application.get_default()
+    for window in app.get_windows():
+        width,height=window.get_size()
+        if width<420 or height<280:errors.append('Window restored with unusable dimensions')
     if len(app.get_windows())!=2:errors.append('Desktop action did not create the second window')
     else:done.append(True)
     for window in list(app.get_windows()):window.close()

@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const html=fs.readFileSync('app/index.html','utf8'),nodes=new Map();
 for(const id of ['runner','screen','copy-video-link','external','status'])nodes.set(id,{hidden:true,replaceChildren(){},append(){}});
 let events;
-const context=vm.createContext({$:id=>nodes.get(id),window:{YT:{Player:function(frame,options){events=options.events;}}},document:{createElement:()=>({})},location:{origin:'http://127.0.0.1:1234'},encodeURIComponent,notifyWindowState(){},syncControls(){},stopPlaybackRetry(){},startSelectedVideo(){},syncExternalVideoLink(){},uiRaw(){},uiText(){},uiAttr(){},uiErrorText(){},selected:'',youtubePlayer:null,playerReady:false,playbackRequest:0});
+const context=vm.createContext({$:id=>nodes.get(id),window:{YT:{Player:function(frame,options){events=options.events;}}},document:{createElement:()=>({})},location:{origin:'http://127.0.0.1:1234'},encodeURIComponent,notifyWindowState(){},syncChrome(){},stopPlaybackRetry(){},startSelectedVideo(){},syncExternalVideoLink(){},uiRaw(){},uiText(){},uiAttr(){},uiErrorText(){},selected:'',youtubePlayer:null,playerReady:false,playbackRequest:0});
 vm.runInContext(html.slice(html.indexOf('async function play('),html.indexOf("\nlet activeTab=")),context);
 (async()=>{
  await context.play('abcdefghijk','Synthetic');

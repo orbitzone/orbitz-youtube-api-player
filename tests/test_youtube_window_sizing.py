@@ -20,7 +20,7 @@ class YouTubeWindowSizingTests(unittest.TestCase):
         self.assertIn('0<length<=4096', source)
         self.assertIn("self.headers.get('Origin')!=origin", source)
         self.assertIn("if not isinstance(data,dict)", source)
-        self.assertIn("server.ui_actions={'fit-player':fit_player,'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'auto-controls':set_auto_controls,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}", widget)
+        self.assertIn("server.ui_actions={'window-action':window_action,'fit-player':fit_player,'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}", widget)
         self.assertIn('completed.wait(timeout)', widget)
 
     def test_flatpak_manifest_exposes_only_the_required_audio_socket(self):
@@ -95,7 +95,7 @@ class YouTubeWindowSizingTests(unittest.TestCase):
         self.assertIn('#screen{aspect-ratio:auto;flex:1;min-height:0;height:auto}', html)
         self.assertIn('#results button{align-items:center;min-height:80px}', html)
         self.assertIn("function windowLayoutState(){if(!$('config').hidden&&$('discovery').hidden&&$('screen').hidden)return 'settings';return $('discovery').hidden?($('screen').hidden?'idle':'player'):'panel'}", html)
-        self.assertIn("api('window-state',{state:windowLayoutState()}).catch(()=>{})", html)
+        self.assertIn("api('window-state',{state:windowLayoutState(),...(content_bounds?{content_bounds}:{})}).catch(()=>{})", html)
         self.assertIn("$('query').addEventListener('input',()=>{++sequence;clearTimeout(tabSearchTimer);activeSearchController?.abort();", html)
         self.assertIn('setTimeout(searchCurrentTab,180)', html)
         self.assertNotIn('window.webkit', html)

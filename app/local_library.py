@@ -12,7 +12,7 @@ from contextlib import contextmanager
 DATABASE = Path(os.environ.get('XDG_CONFIG_HOME', Path.home()/'.config'))/'orbitz-youtube-wrapper'/'library.sqlite3'
 LOCK = threading.RLock()
 MAX_MEDIA_SECONDS = 2_147_483_647
-DEFAULTS = dict(game_volume=25,game_sound=False,always_above=False, auto_controls=False, hide_delay=2000, show_delay=500)
+DEFAULTS = dict(game_volume=25,game_sound=False,always_above=False)
 
 
 def video(value):
@@ -28,11 +28,10 @@ def video(value):
 def preferences(value):
     if not isinstance(value,dict) or set(value)-DEFAULTS.keys():raise ValueError('Invalid preferences')
     for key,item in value.items():
-        if key in ('always_above','auto_controls','game_sound'):
+        if key in ('always_above','game_sound'):
             if type(item) is not bool:raise ValueError('Invalid preference')
         elif key=='game_volume':
             if type(item) is not int or not 0<=item<=100:raise ValueError('Invalid volume')
-        elif type(item) is not int or not 100<=item<=10000:raise ValueError('Invalid delay')
     return value
 
 
@@ -60,7 +59,10 @@ def put(db,key,value):db.execute('INSERT OR REPLACE INTO settings VALUES (?,?)',
 
 
 def state(db):
-    prefs={**DEFAULTS,**setting(db,'preferences',{})}
+    stored=setting(db,'preferences',{})
+    clean={key:value for key,value in stored.items() if key in DEFAULTS}
+    if clean!=stored:put(db,'preferences',clean)
+    prefs={**DEFAULTS,**clean}
     result=dict(preferences=prefs,resume=setting(db,'resume',None),recommendation_preferences=setting(db,'recommendation_preferences',{'interests':[],'use_recent':True}))
     for kind in ('favorites','later'):
         result[kind]=[dict(id=i,title=t) for i,t in db.execute('SELECT id,title FROM bookmarks WHERE kind=? ORDER BY rowid DESC',(kind,))]
@@ -71,7 +73,7 @@ def state(db):
 def action(data):
     op=data.get('op','get')
     with connection() as db:
-        if op=='preferences':put(db,'preferences',{**setting(db,'preferences',{}),**preferences(data.get('values'))})
+        if op=='preferences':put(db,'preferences',{**{key:value for key,value in setting(db,'preferences',{}).items() if key in DEFAULTS},**preferences(data.get('values'))})
         elif op in ('save','remove'):
             kind=data.get('kind')
             if kind not in ('favorites','later'):raise ValueError('Invalid list')

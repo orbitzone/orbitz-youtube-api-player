@@ -38,12 +38,11 @@ def save_geometry(value):
 
 
 def visible_geometry(value,areas):
-    """Keep exact saved bounds unless their monitor is no longer reachable."""
+    """Recover unusable bounds and keep the full window on a reachable monitor."""
     if not areas:return dict(value)
-    for area in areas:
-        if (value['x']<area.x+area.width and value['x']+value['width']>area.x and
-                value['y']<area.y+area.height and value['y']+value['height']>area.y):return dict(value)
-    area=areas[0];width=min(value['width'],area.width);height=min(value['height'],area.height)
+    area=next((a for a in areas if value['x']<a.x+a.width and value['x']+value['width']>a.x and value['y']<a.y+a.height and value['y']+value['height']>a.y),areas[0])
+    width=min(area.width,max(min(420,area.width),value['width']))
+    height=min(area.height,max(min(280,area.height),value['height']))
     return {**value,'x':max(area.x,min(value['x'],area.x+area.width-width)),
         'y':max(area.y,min(value['y'],area.y+area.height-height)),'width':width,'height':height}
 
@@ -100,7 +99,7 @@ class GeometryTracker:
             return {**self.last,'maximized':True} if self.last else None
         frame=native.get_frame_extents()
         value=dict(version=1,x=frame.x,y=frame.y,width=frame.width,height=frame.height,maximized=False)
-        return value if valid_geometry(value) else None
+        return value if valid_geometry(value) and frame.width>=96 and frame.height>=96 else None
 
     def configured(self,*_):
         if not self.alive or self.restoring:return False

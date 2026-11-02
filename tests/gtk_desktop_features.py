@@ -10,7 +10,7 @@ import youtube_server
 # No provider request, personal key or personal database.
 youtube_server.recommendations=lambda *args:{'items':[],'basis':'popular','terms':[]}
 import local_library
-local_library.action({'op':'preferences','values':{'always_above':True,'auto_controls':True,'hide_delay':3000,'show_delay':800}})
+local_library.action({'op':'preferences','values':{'always_above':True}})
 import media_controls
 media_controls.NAME+='.Test'
 import gi
@@ -29,7 +29,7 @@ def check():
  manager.connect('script-message-received::desktopcheck',receive)
  view.run_javascript('''(async()=>{
  const assert=(v,m)=>{if(!v)throw Error(m)};
- assert(alwaysAbove&&autoControlsEnabled,'persistent toggles restored in native app');
+ assert(alwaysAbove,'persistent toggles restored in native app');
  assert(autoHideDelay===3000&&autoShowDelay===800,'persistent delays');
  const d=await api('diagnostics',{});assert(d.webkit&&typeof d.gpu_access==='boolean','native diagnostics');
  await api('media-state',{id:'abcdefghijk',title:'Synthetic native',position:42,duration:300,status:'Paused',volume:.7,next:false});
@@ -45,7 +45,7 @@ source=(root/'app/youtube-wrapper.py').read_text().replace("application_id='io.o
 GLib.timeout_add_seconds(12,timeout)
 exec(compile(source,'desktop-smoke','exec'),{'__name__':'__main__'})
 if completed:
- saved=local_library.action({});assert saved['resume']['position']==42;assert saved['preferences']['auto_controls']
+ saved=local_library.action({});assert saved['resume']['position']==42;assert saved['preferences']['always_above']
 profile.cleanup()
 if errors or not completed:raise SystemExit('Desktop smoke failed '+str(errors))
 print('Full GTK desktop PASS: restored native preferences, diagnostics, media state and close-time resume')

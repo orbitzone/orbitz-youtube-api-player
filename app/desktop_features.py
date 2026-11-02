@@ -5,6 +5,7 @@ from pathlib import Path
 import platform
 import tempfile
 import local_library
+from app_version import VERSION
 
 
 def transfer(window,Gtk,data):
@@ -48,4 +49,4 @@ def diagnostics(Gtk,WebKit2):
     gi.require_version('Gst','1.0')
     from gi.repository import Gst,GLib
     Gst.init(None)
-    return dict(application='YouTube API Player - By Orbitz',version='0.1.0',python=platform.python_version(),gtk='.'.join(map(str,(Gtk.get_major_version(),Gtk.get_minor_version(),Gtk.get_micro_version()))),webkit='.'.join(map(str,(WebKit2.get_major_version(),WebKit2.get_minor_version(),WebKit2.get_micro_version()))),glib='.'.join(map(str,(GLib.MAJOR_VERSION,GLib.MINOR_VERSION,GLib.MICRO_VERSION))),gpu_access=any(os.access(path,os.R_OK|os.W_OK) for path in Path('/dev/dri').glob('renderD*')),hardware_decoders={name:bool(Gst.ElementFactory.find(name)) for name in ('vah264dec','vah265dec','vavp9dec','vaav1dec')},mpris='org.mpris.MediaPlayer2.orbitz_youtube_wrapper',note='Decoder availability does not identify the codec used by the current video.')
+    return dict(application='YouTube API Player - By Orbitz',version=VERSION,python=platform.python_version(),gtk='.'.join(map(str,(Gtk.get_major_version(),Gtk.get_minor_version(),Gtk.get_micro_version()))),webkit='.'.join(map(str,(WebKit2.get_major_version(),WebKit2.get_minor_version(),WebKit2.get_micro_version()))),glib='.'.join(map(str,(GLib.MAJOR_VERSION,GLib.MINOR_VERSION,GLib.MICRO_VERSION))),gpu_access=any(os.access(path,os.R_OK|os.W_OK) for path in Path('/dev/dri').glob('renderD*')),hardware_decoders={name:bool(Gst.ElementFactory.find(name)) for name in ('vah264dec','vah265dec','vavp9dec','vaav1dec')},mpris='org.mpris.MediaPlayer2.orbitz_youtube_wrapper',note='Decoder availability does not identify the codec used by the current video.')

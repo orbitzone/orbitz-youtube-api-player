@@ -458,3 +458,83 @@ Substituído ajuste automático por moldura com oito alças e arraste nativo GTK
 Causa: runner com filhos absolutos e flex-basis auto perdia altura quando o overlay removia a dimensão travada no hide. Alterado para flex:1 nesse modo. Teste GTK/WebKit resize real: seis jogos, três tamanhos de janela cada, canvas desenhado, área preenchendo viewport, overlay acompanhando e restauração de controles. Suíte Python/JS aprovada após atualizar a expectativa CSS anterior. Flatpak instalado e reaberto: `034f56d58ebf1addcf8b4c5f85302fdd711c6ca02b0f62643fa130b00294b59b`.
 
 Evidências persistidas da regressão: [logs, medições e capturas dos seis jogos](evidence/2026-11-01-game-resize/README.md). Reexecução em perfil temporário confirmou 18 cenários.
+
+## Orbit Lander: mouse (01/11/2026)
+
+Ponteiro convertido para coordenadas do mundo; controle de posição/velocidade ajusta ângulo e potência preservando gravidade, vento, combustível e colisões. Clique inicia/reinicia; teclado assume ao pressionar controles. Saída/cancelamento/pausa limpa alvo. Teste de simulação confirma travessia, frenagem e pouso somente com alvo do mouse, sem perder vidas, e queda sem combustível; suíte Python/JS aprovada. Smoke GTK/WebKit do Lander aprovado. Flatpak instalado e reaberto: `4906362979825473c94338eedb47517ca95dfa7741e0126cae406f1ddfd58f41`.
+
+## Lander: propulsão condicionada ao clique (01/11/2026)
+
+Guia pelo ponteiro mantém direção, mas potência exige thrust ativo (botão esquerdo pressionado ou teclado). Testes confirmam ausência de consumo/aceleração de motor sem clique, ativação ao pressionar e corte ao soltar. Suíte Python/JS aprovada. Flatpak instalado e reaberto: `961e60e0255d92c08b51cd3698f4515c79dc4513e52664089f40dae241c5e424`.
+
+## Orbit Lander: explosão (01/11/2026)
+
+Impacto gera clarão curto e 32 partículas/fragmentos com fade e gravidade; nave destruída fica oculta até reposição. Animação também conclui na última vida; pausa/visibilidade seguem scheduler existente. Testes JS confirmam criação, animação na última vida e limpeza na reposição; suíte e smoke GTK/WebKit do Lander aprovados. Flatpak instalado e reaberto: `8c17ed387d6d78a69981ffcda3d6b92483296f89651eda58a49484d2af0d69d4`.
+
+## Orbit Lander: foguete (01/11/2026)
+
+Substituída nave por booster vetorial inspirado no Falcon 9, corpo branco alongado, faixa escura, aletas e pernas de pouso. Renderizador compartilhado atualiza miniatura também. Chama animada acompanha motor e explosão preservada. Colisão superior ajustada à altura do foguete. Testes de física/controle/explosão e smoke GTK/WebKit aprovados. Flatpak instalado e reaberto: `72a1995caadd85a474ed5984703140387a2d4fbaa3df7a86838b915a910778a3`.
+
+## Barra de título interna (01/11/2026)
+
+Decoração nativa desativada permanentemente. Barra HTML com título, minimizar, maximizar/restaurar, fechar, arraste GTK e duplo clique; ações também no menu principal. Ctrl+H oculta a barra junto ao header/footer. Ações HTTP protegidas pelo token/origem existentes e coordenadas/comandos validados; fechamento passa por window.close com salvamento existente. Suíte Python/JS aprovada. Smoke GTK/WebKit confirmou decoração nativa ausente, maximização/restauração e ocultação/restauração da barra interna. Arraste físico e minimizar/fechar não automatizados nesse smoke. Flatpak instalado e reaberto: `e280314329e7004e2e1f95dc2d38310ffbc2e27b2f45ec9bde87e4027fec59e3`.
+
+## Ícones da janela (01/11/2026)
+
+Ícones SVG consistentes de 12px. Estado MAXIMIZED real do GTK alterna quadrado de maximizar e quadrados sobrepostos de restaurar, tooltip/rótulo acessível e ação no menu. Sincronização também ao carregar e trocar idioma. Clique do mouse libera foco visual, teclado preserva focus-visible. Suíte Python/JS aprovada; GTK/WebKit confirmou ícones/rótulos após maximizar/restaurar e tamanho 12px. Flatpak instalado e reaberto: `edd2c16f3ab1219c2443337f91c55dde1faa0d9ad6f84e22635e968c8538c62b`.
+
+## Três faixas e transições (01/11/2026)
+
+Header agrupando título/menu, main de largura total e footer único. Removida margem/borda lateral do runner. Revelação do header para cima e footer para baixo; retração de ambos para baixo, transform/opacity .5s sincronizados, espaço do body estável. Observador nativo cobre iframe e saída da janela; passagem aos controles/foco de edição mantém acesso. Configuração automática antiga delega ao novo hover, sem redimensionar janela durante animação. Ctrl+H explícito preservado. Suíte Python/JS e GTK/WebKit de largura total, reversão rápida e estabilidade aprovados. Teste real de 18 redimensionamentos dos seis jogos aprovado. Flatpak instalado e reaberto: `f3d5ad8b17711c437e3dda8efb94b1b62548401b2e7d120abf9819301643ceb6`.
+
+## Hover e transparência corrigidos (01/11/2026)
+
+Saída do body para espaço não interativo da própria janela agora recolhe controles; botões e campos permanecem utilizáveis. Foco residual de botões não impede recolhimento. Fundos html/body, WebView e Gtk.ApplicationWindow RGBA transparentes; body opaco preservado. Suíte Python/JS aprovada. GTK/WebKit confirmou recolhimento com ponteiro ainda dentro da janela, reversão rápida, body estável e alpha zero em pixel da faixa superior recolhida. Flatpak instalado e reaberto: `e5bd2f84a3caf3a43910a228048b8cc1dcba9c4ae53475af0fac4a666a62897b`.
+
+## Transições: camadas e direção do footer (01/11/2026)
+
+Camadas do header/footer fixas atrás do body; removida troca de z-index por estado de hover/foco e animação de opacidade. Transform translate3d com .5s; footer recolhido acima da faixa e revela para baixo. Menu aberto eleva header apenas enquanto necessário. Suíte Python/JS aprovada. GTK/WebKit amostrou sete quadros do footer verificando deslocamento monotônico para baixo, z-index estável, body imóvel, transparência e reversão. Flatpak instalado e reaberto: `6eaf25852f403ea77562a4003330743dc9e64bd3189cf050c15d72729d92d9e2`.
+
+## Recorte permanente das faixas animadas (01/11/2026)
+
+Header/footer receberam wrappers estáveis com overflow hidden e isolamento; transform fica apenas nos elementos internos e não pode invadir o body. Retirada promoção translate3d/will-change e exceção de z-index do header; menu portado ao body em posição fixa, fora das máscaras. Suíte Python/JS aprovada. Teste GTK/WebKit determinístico isola observador físico e compara pixels dos primeiros 64px do body em oito capturas durante revelação: idênticos à referência; também verifica recortes, hit-test, direção monotônica do footer, transparência e reversão. A primeira execução com ponteiro físico concorrente falhou na sequência sintética; isolado o observador apenas no teste, passou. Flatpak instalado e reaberto: `77ad08edbd86160ca378ea4b17ab631c692b76816fb34b3f19e6b6dcf03bb154`.
+
+## Estabilidade no fim da animação (01/11/2026)
+
+Tentativa somente com camadas persistentes CSS ainda apresentou uma falha de monotonicidade em uma execução; substituída transição CSS por um único requestAnimationFrame, progresso compartilhado header/footer, duração máxima 500ms e reversão da posição atual. Transform 3D/camadas/máscaras mantidos inclusive após fim, sem troca de classes/estilos de composição no endpoint. Scheduler para quando o progresso termina. Suíte Python/JS aprovada. Duas execuções consecutivas GTK/WebKit aprovadas: oito capturas da faixa superior do body durante revelação, oito capturas das faixas após recolher e oito após revelar, transparência, sentido e reversão. Teste de pixels representa WebKit, não captura compositor global do desktop. Flatpak instalado e reaberto: `2bb7cf8d7e392e1548e4a64da1b21e9a30e23dd9eb1980304a97bdee73c8fc0d`.
+
+## Entrada pelo body e saída pela janela (01/11/2026)
+
+Revelação permanece ativada ao entrar no body e mantém estado ao atravessar header/footer; somente sample.inside=false recolhe. Entrar apenas na faixa transparente não revela. Mecanismo único de animação preservado. Suíte Python/JS e GTK/WebKit aprovados, incluindo passagem pelas faixas, saída completa, reentrada fora do body, reversão e pixels estáveis após transições. Flatpak instalado e reaberto: `6a9ba3367cc5d6d767d904b984e10634811029a36d4088eae686297d0ce9a37f`.
+
+## Remoção do mecanismo legado de controles (01/11/2026)
+
+Retirados endpoint/opção de ocultação antiga, atalho manual, timers/epochs de delays, payloads/ancoragem nativa, travamento de área, estilos, preferências e textos. Estado atual de chrome usa somente a animação nova; watcher nativo único observa entrada/saída da janela. Preferências fora do schema atual são removidas transacionalmente sem perder dados válidos. README atualizado, testes exclusivos de recursos retirados removidos e regressões de mídia/fullscreen mantidas. Busca em app/i18n/tests/README não encontrou símbolos retirados. Histórico desta validação e evidências antigas preservados como registro, sem efeito no runtime. Suíte Python/JS aprovada, migração genérica de preferências e atalho não interceptado cobertos. GTK/WebKit da animação passou após isolar thumbnails de rede na comparação de pixels; 18 redimensionamentos nos seis jogos aprovados sem mecanismo antigo. Flatpak instalado e reaberto: `86149e28484ce1eb1483393e7df132c87d6c7e3c2b0ef69e34144c000a715ba0`.
+
+## Recuperação de janelas colapsadas (01/11/2026)
+
+Diagnóstico real via X11: duas janelas existentes em 1069×1, não falha de criação do processo. Geometria salva agora é normalizada para mínimo 420×280 e mantida dentro da área útil; Gtk aplica mínimo antes de restaurar. Snapshot não persiste configure transitório menor que 96px. Suíte Python/JS aprovada. Teste de ação desktop reproduz geometria salva 1069×1 e confirma recuperação de duas janelas utilizáveis. Primeira execução de teste expôs erro de variável no patch, corrigido antes de instalar. Após instalação, duas janelas reais reabertas e verificadas via X11 em 1069×280. Flatpak: `f670d0cac7193695409c28eb95a002042af88080add26b8fc30414688ba6bbff`.
+
+## Redimensionamento pelas bordas (01/11/2026)
+
+Oito alvos transparentes: bordas de 5px e cantos de 10px, com cursores apropriados. Despacho usa begin_resize_drag já validado no GTK, independente da revelação de controles; desativado em maximizado/fullscreen, mínimo de janela preservado. Suíte Python/JS e GTK/WebKit aprovados; hit-test confirmado nos oito pontos e desativação ao maximizar. Gesto físico não automatizado. Flatpak instalado e duas janelas reabertas: `5d6eab9bfc80a977cb625e6b462bc9196960dfc2b53cd813f4bc8c5fe444d76e`.
+
+## Saída com painéis, área compacta e ponteiro econômico (02/11/2026)
+
+Prioridade à saída completa mesmo com menu, busca ou configurações abertos. Card unificado de resultado/fila, coluna de curtidas 40px, coração 20px e ação 30px sem botão de altura total. Deduplicação nativa por região evita mensagens a cada movimento dentro do body. Suíte Python/JS e GTK/WebKit aprovados. Baseline e limites documentados em evidence/2026-11-02-pointer. Nenhum ganho percentual de CPU é afirmado sem comparação controlada. Flatpak instalado: `b3a6af2fbb0927ff4f5e1a2f4a5f89e4ac1f81b329484fc76b192f498f47c1ff`; reabertura preserva quantidade de janelas encontradas.
+
+## Inatividade de mouse por cinco segundos (02/11/2026)
+
+Observador nativo usa relógio monotônico e emite alteração idle somente após 5s sem movimento; qualquer movimento reinicia prazo e emite retorno imediato, mesmo dentro da mesma região deduplicada. Header/footer usam animação única existente; saída da janela continua recolhendo. Sem segundo polling/intervalo. Testes unitários com relógio controlado verificam limiar 4.99/5s, mensagem única parado, movimento e reinício. Suíte Python/JS aprovada e GTK/WebKit confirmou idle dentro do body, retorno ao mover e estabilidade de pixels/transições. Flatpak instalado e janelas atuais reabertas: `af6ae77993c1f2a6e1b6a98c2775a452b7c41f2c4a8f98b70480f47357bdd4fe`.
+
+## Orbit Maze responsivo e seis mapas (02/11/2026)
+
+Tabuleiro ocupa 100% da largura, altura disponível entre HUD e ajuda, células ajustadas horizontalmente e personagens compensados para manter silhueta circular. Fundo/pontos continuam em cache. Cinco layouts adicionais determinísticos construídos uma única vez, além do azul original; paletas roxa, verde, âmbar, rosa e ciano. Ciclo de seis fases preserva score/vidas e dificuldade progressiva. Testes verificam conectividade de todos os pontos/spawns/cereja/portais nos seis layouts, unicidade de mapas/cores, ciclo por 12 fases e encaixe em quatro proporções. Suíte Python/JS e smoke GTK/WebKit de movimento/pausa/renderização aprovados. Flatpak instalado e janelas atuais reabertas: `8c7b0780cd529f51caef2abc407e6681baaa3624677ce4e3f57a3d3565dfefdb`.
+
+## Maze: cereja concede vida (02/11/2026)
+
+Cereja agora soma uma vida e não concede bônus de pontos; pontos normais do caminho continuam independentes. Fantasma mantém 200 pontos por captura durante poder, com cooldown impedindo pontuação duplicada. Feedback flutuante +1 coração / +200, com vida curta e quantidade limitada. Ajuda PT/EN atualizada. Suíte Python/JS e smoke GTK/WebKit aprovados; testes verificam vida extra sem bônus, captura de 200 e ausência de prêmio duplicado. Flatpak instalado e aplicativo reaberto: `d2ea59efc4f1a216275aa6c8ef549f55863e584c7c8f126d9d2030bc41cb4574`.
+
+## Primeira beta local 0.2.0-beta.1 (02/11/2026)
+
+Versão centralizada em VERSION e diagnóstico; AppStream development e URLs atuais, notas/limitações/roteiro manual, script de preparação local e CI com artefatos completos. Build novo Flatpak, checksum e imports/versão no runtime aprovados; suite Python/JS, GTK/WebKit home e duas janelas aprovados. Evidências em evidence/0.2.0-beta.1. Sem publicação, tag, push ou instalação sobre o perfil atual.
