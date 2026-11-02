@@ -1,0 +1,26 @@
+Gtk-Message: 22:23:20.159: Failed to load module "canberra-gtk-module"
+/home/felipe/Documents/Codex/projects/orbitz-youtube-wrapper/app/youtube-wrapper.py:150: DeprecationWarning: WebKit2.WebView.run_javascript is deprecated
+  view.run_javascript('window.orbitzWindowLocked='+str(bool(event.new_window_state & (Gdk.WindowState.FULLSCREEN|Gdk.WindowState.MAXIMIZED))).lower()+';',None,None,None)
+/home/felipe/Documents/Codex/projects/orbitz-youtube-wrapper/app/youtube-wrapper.py:115: DeprecationWarning: Gdk.Screen.get_monitor_at_window is deprecated
+  screen=window.get_screen();index=screen.get_monitor_at_window(window.get_window())
+/home/felipe/Documents/Codex/projects/orbitz-youtube-wrapper/app/youtube-wrapper.py:116: DeprecationWarning: Gdk.Screen.get_monitor_workarea is deprecated
+  return screen.get_monitor_workarea(index).height
+{"game": "runner", "requested": [620, 380], "viewport": [620, 380], "content": [620, 380], "canvas": [620, 380], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "runner", "requested": [800, 540], "viewport": [800, 540], "content": [800, 540], "canvas": [800, 540], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "runner", "requested": [500, 320], "viewport": [500, 320], "content": [500, 320], "canvas": [500, 320], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "maze", "requested": [620, 380], "viewport": [620, 380], "content": [620, 380], "canvas": [620, 380], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "maze", "requested": [800, 540], "viewport": [800, 540], "content": [800, 540], "canvas": [800, 540], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "maze", "requested": [500, 320], "viewport": [500, 320], "content": [500, 320], "canvas": [500, 320], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "invaders", "requested": [620, 380], "viewport": [620, 380], "content": [620, 380], "canvas": [620, 380], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "invaders", "requested": [800, 540], "viewport": [800, 540], "content": [800, 540], "canvas": [800, 540], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "invaders", "requested": [500, 320], "viewport": [500, 320], "content": [500, 320], "canvas": [500, 320], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "asteroids", "requested": [620, 380], "viewport": [620, 380], "content": [620, 380], "canvas": [620, 380], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "asteroids", "requested": [800, 540], "viewport": [800, 540], "content": [800, 540], "canvas": [800, 540], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "asteroids", "requested": [500, 320], "viewport": [500, 320], "content": [500, 320], "canvas": [500, 320], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "breaker", "requested": [620, 380], "viewport": [620, 380], "content": [620, 380], "canvas": [620, 380], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "breaker", "requested": [800, 540], "viewport": [800, 540], "content": [800, 540], "canvas": [800, 540], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "breaker", "requested": [500, 320], "viewport": [500, 320], "content": [500, 320], "canvas": [500, 320], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "lander", "requested": [620, 380], "viewport": [620, 380], "content": [620, 380], "canvas": [620, 380], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "lander", "requested": [800, 540], "viewport": [800, 540], "content": [800, 540], "canvas": [800, 540], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+{"game": "lander", "requested": [500, 320], "viewport": [500, 320], "content": [500, 320], "canvas": [500, 320], "hidden": true, "overlay": true, "paused": true, "drawn": true}
+OK: all six games remain drawn and fill the hidden window through three actual native resizes.

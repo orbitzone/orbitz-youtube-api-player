@@ -157,5 +157,14 @@
   "youtube.lander_start": "ORBIT LANDER · Space to begin",
   "youtube.lander_landed": "Safe landing! Next mission…",
   "youtube.lander_crash": "Impact! Preparing another ship…",
-  "youtube.lander_telemetry": "Fuel {fuel}% · VX {vx} · VY {vy}"
+  "youtube.lander_telemetry": "Fuel {fuel}% · VX {vx} · VY {vy}",
+  "youtube.home": "Go to home",
+  "youtube.support_title": "Power the next orbit",
+  "youtube.support_description": "Your support takes Orbitz further.",
+  "youtube.support_paypal": "Support via PayPal",
+  "youtube.fit_player": "Resize player",
+  "youtube.fit_locked": "Exit fullscreen or restore the window to resize.",
+  "youtube.fit_failed": "Could not resize the window.",
+  "youtube.resize_hint": "Drag the handles to resize · Esc or Ctrl+T to exit",
+  "youtube.resize_done": "Done"
 }

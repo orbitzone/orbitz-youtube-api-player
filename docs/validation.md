@@ -404,3 +404,57 @@ search.list solicita até 50 candidatos e devolve até 20 válidos/deduplicados.
 Personalização vazia tenta uma única busca geral na mesma categoria, com rótulo genérico e termos vazios, sem trocar de modo. Cache por categoria/perfil passa a versão 3 para invalidar resultados antigos e guarda apenas marcador de fallback, sem inserir termos explícitos adicionais no arquivo.
 
 Suíte Python/JS aprovada. Novos testes sintéticos cobrem transmissão ativa/agendada em cada categoria, evidência de podcast, rejeição de cortes, fallback restrito ao modo e metadados do fallback no cache; fixtures de vinte resultados atualizadas para incluir tipos de transmissão. Não houve consulta à chave pessoal nem validação de resultados reais da conta. Fontes instaladas conferidas, commit `8cb48e08bbf90e06c3cc660667f77c8087e902a0f086cdb882cad51958b15286`; aplicativo reaberto. Fontes oficiais: https://developers.google.com/youtube/v3/docs/search/list e https://developers.google.com/youtube/v3/docs/search .
+
+## Rodapé compacto (01/11/2026)
+
+Padding vertical reduzido de 9px para 2px, line-height de 14px e alinhamento central dos itens. Whitespace validado e HTML instalado conferido. Commit `6a2b37cd03385154d5bc819519680bb64079733bea5ea0eac14a1e107eea59a3`; aplicativo reaberto.
+
+## Rodapé do player alinhado (01/11/2026)
+
+Removida altura fixa baseada em viewport-110px do screen; player flexível ocupa área restante, eliminando sobra abaixo do rodapé. Itens do footer em caixas inline-flex de 14px com alinhamento central e padding vertical de 2px. Suíte Python/JS aprovada; teste GTK/WebKit de geometria confirmou área central idêntica antes/ocultar/mostrar controles. HTML instalado conferido, commit `1fe20753a849bad1e9978c4f9e1cd97d359f23e4069accf06f9bbc310ea1a549`; aplicativo reaberto.
+
+## Respiro no rodapé comum (01/11/2026)
+
+Mantido um único footer para todas as telas. Padding vertical de 6px (26px totais com linha de 14px), preservando alinhamento dos itens e layout flexível do player. Confirmado um único elemento footer, whitespace validado e HTML instalado conferido. Commit `aa30aee31b97af5dc526ec489cee9e1c46e41230ab604f2468e6af7a2a6f0083`; aplicativo reaberto.
+
+## Assinatura no cabeçalho (01/11/2026)
+
+By Orbitz em linha secundária de 9px abaixo de API Player, marca em coluna centralizada verticalmente. Breakpoint existente mantém marca oculta em janelas estreitas. Whitespace validado e HTML instalado conferido. Commit `e170c9f81b4d162170816e9fd193b84cd2bd7d91db3ef3834fb7e06330ede8a2`; aplicativo reaberto.
+
+## Orbitron na assinatura do cabeçalho (01/11/2026)
+
+By Orbitz usa Orbitron local, mantendo tamanho de 9px e posição abaixo de API Player. Whitespace validado e HTML instalado conferido. Commit `2f56f27f55661ed56abfc518be03cf7cc61d637789787e99186662bda084f2b7`; aplicativo reaberto.
+
+## Arial na assinatura (01/11/2026)
+
+By Orbitz usa Arial, com fallback Helvetica/sans-serif quando indisponível. Tamanho e posição preservados. Whitespace validado e HTML instalado conferido. Commit `33a35172f221362409971c98d115f6acc3b2774469eeac28af01dccd8b8f3476`; aplicativo reaberto.
+
+## Símbolo como retorno à home (01/11/2026)
+
+Símbolo YouTube convertido em botão acessível com tooltip PT/EN e visual preservado. Usa retorno comum à home Keep Watching/Orbit Games, fecha busca/menu/painéis e pausa vídeo existente. Teste GTK/WebKit retornou à home pelo logo a partir de cada jogo e confirmou fechamento da descoberta. Suíte Python/JS aprovada, whitespace e arquivos instalados conferidos. Commit `0c418905172b959dcc0f73a10541e05eab99d142d62560d9879465c2bc4dbbe3`; aplicativo reaberto.
+
+## Keep Watching preservado no Ctrl+H (01/11/2026)
+
+Removida regra legada que escondia feature-resume em body.controls-hidden. Conteúdo permanente da home permanece visível ao ocultar cabeçalho/rodapé. Teste GTK/WebKit confirmou display e altura da retomada com a classe de controles ocultos. Whitespace validado e script instalado conferido. Commit `61c7f8744f3a558cb4831752bee32287921b83a39205dfacb34981eb31c2c60d`; aplicativo reaberto.
+
+## Seção de apoio Orbit Games (01/11/2026)
+
+Seção responsiva abaixo da grade com convite para café, PT/EN e PayPal desabilitado até definição do link pelo autor. Sem transações, timers ou recursos externos. Sintaxe JS, whitespace e smoke GTK/WebKit da home aprovados. Atualização Flatpak instalada: `559cb6b1bca540c36777cb90ecc20486146022e4a7147ee886c1499acdbc8910`.
+
+## Copy da seção de apoio (01/11/2026)
+
+Tema espacial com título “Dê impulso à próxima órbita” e descrição curta em uma linha “Seu apoio leva o Orbitz mais longe.” Removidos café e aviso de disponibilidade; PayPal continua desabilitado sem destino definido. Sintaxe JS, whitespace e smoke GTK/WebKit aprovados. Flatpak instalado e reaberto: `421c7ef7648a49f8ff81395107ad375f92b7e161980d9fd6085ef67385506150`.
+
+## Ctrl+T: ajustar janela ao vídeo (01/11/2026)
+
+Atalho nativo alcança iframe focado e tem bloqueio de repetição; item no menu. Proporção obtida de videos.list(part=player,maxWidth=1920), sem OAuth; fallback explícito 16:9 sem chave/dimensões. Ajusta área do vídeo contabilizando header/footer e decoração, limitado ao monitor; não altera janela maximizada/fullscreen ou durante transição. Controles ocultos são revelados antes do ajuste. Suíte Python/JS aprovada, testes adicionais de proporção vertical/fallback, limites do monitor e entrada inválida aprovados; GTK/WebKit confirmou Ctrl+H preservando retângulo. Flatpak instalado e reaberto: `2ba4199ffa941d4660a156d4b1875fde82b62a827c841705c9819e3bea5fae15`.
+
+## Ctrl+T: modo visual corrigido (01/11/2026)
+
+Substituído ajuste automático por moldura com oito alças e arraste nativo GTK. Nenhuma consulta ao YouTube, reload ou exibição do chrome ao ativar. Esc/Enter/Ctrl+T/Concluir encerram edição; auto-hide suspenso durante edição. Registro de geometria oculta acompanha mudanças no tamanho e origem para restaurar controles sobre o tamanho novo. Suíte Python/JS e teste nativo de despacho/validação aprovados. GTK/WebKit verificou overlay em hide sem modificar retângulo, fechamento e retorno do chrome; smoke completo da home aprovado. Interação real de arraste no gerenciador de janelas não automatizada. Flatpak instalado e reaberto: `c43e3eace099e95518da42808a1200fdda030a106d23131106c69e8b770d27d7`.
+
+## Jogos desaparecendo ao redimensionar: correção (01/11/2026)
+
+Causa: runner com filhos absolutos e flex-basis auto perdia altura quando o overlay removia a dimensão travada no hide. Alterado para flex:1 nesse modo. Teste GTK/WebKit resize real: seis jogos, três tamanhos de janela cada, canvas desenhado, área preenchendo viewport, overlay acompanhando e restauração de controles. Suíte Python/JS aprovada após atualizar a expectativa CSS anterior. Flatpak instalado e reaberto: `034f56d58ebf1addcf8b4c5f85302fdd711c6ca02b0f62643fa130b00294b59b`.
+
+Evidências persistidas da regressão: [logs, medições e capturas dos seis jogos](evidence/2026-11-01-game-resize/README.md). Reexecução em perfil temporário confirmou 18 cenários.

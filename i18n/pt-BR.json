@@ -157,5 +157,14 @@
   "youtube.lander_start": "ORBIT LANDER · Espaço para iniciar",
   "youtube.lander_landed": "Pouso perfeito! Próxima missão…",
   "youtube.lander_crash": "Impacto! Preparando nova nave…",
-  "youtube.lander_telemetry": "Combustível {fuel}% · VX {vx} · VY {vy}"
+  "youtube.lander_telemetry": "Combustível {fuel}% · VX {vx} · VY {vy}",
+  "youtube.home": "Voltar à tela inicial",
+  "youtube.support_title": "Dê impulso à próxima órbita",
+  "youtube.support_description": "Seu apoio leva o Orbitz mais longe.",
+  "youtube.support_paypal": "Apoiar via PayPal",
+  "youtube.fit_player": "Redimensionar player",
+  "youtube.fit_locked": "Saia da tela cheia ou restaure a janela para ajustar.",
+  "youtube.fit_failed": "Não foi possível ajustar a janela.",
+  "youtube.resize_hint": "Arraste as alças para redimensionar · Esc ou Ctrl+T para sair",
+  "youtube.resize_done": "Concluir"
 }

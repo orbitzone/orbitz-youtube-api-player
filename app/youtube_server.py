@@ -56,7 +56,7 @@ def make_handler(token):
                     locale=data.get('locale')
                     if locale not in ('pt-BR','en-US'):raise ValueError('Idioma inválido.')
                     applied_locale=ui.set_locale(locale);self.reply(200,{'saved':True,'locale':applied_locale})
-                elif action in ('new-window','window-state','open-external','copy-link','always-above','auto-controls','library-transfer','diagnostics','media-state'):
+                elif action in ('fit-player','new-window','window-state','open-external','copy-link','always-above','auto-controls','library-transfer','diagnostics','media-state'):
                     callback=getattr(self.server,'ui_actions',{}).get(action)
                     if callback is None:raise ValueError('Ação indisponível.')
                     if action in ('always-above','auto-controls') and type(data.get('enabled')) is not bool:raise ValueError('Estado inválido.')

@@ -203,7 +203,14 @@ def main():
                     target_root=None
                     if not window_size_locked():window.set_decorated(not hidden)
                     if not hidden and chrome['geometry']:
-                        saved=chrome['geometry'];target_root=saved['root'];resize_state['target']=saved['size'][1]
+                        saved=chrome['geometry']
+                        origin=chrome.pop('resize_origin',None)
+                        if origin:
+                            width,height=window.get_size();ox,oy=window.get_window().get_root_coords(0,0)
+                            dx,dy=ox-origin['root'][0],oy-origin['root'][1]
+                            saved={'size':(max(1,saved['size'][0]+width-origin['size'][0]),max(1,saved['size'][1]+height-origin['size'][1])),
+                                   'root':(saved['root'][0]+dx,saved['root'][1]+dy),'position':(saved['position'][0]+dx,saved['position'][1]+dy)}
+                        target_root=saved['root'];resize_state['target']=saved['size'][1]
                         window.resize(*saved['size']);window.move(*saved['position']);chrome['geometry']=None
                 chrome['hidden']=hidden
                 # Decoration changes are asynchronous under X11/XWayland. Anchor
@@ -222,6 +229,22 @@ def main():
                     GLib.timeout_add(16,anchor_content)
                 GLib.timeout_add(900,end_controls_transition,sequence)
             dispatch_to_gtk(apply,state)
+        def fit_player(data):
+            edge=data.get('edge');names={'nw':'NORTH_WEST','n':'NORTH','ne':'NORTH_EAST','w':'WEST','e':'EAST','sw':'SOUTH_WEST','s':'SOUTH','se':'SOUTH_EAST'}
+            if not isinstance(edge,str) or edge not in names:raise ValueError('Alça inválida.')
+            values=[data.get(k) for k in ('x','y','viewport_width','viewport_height')]
+            if any(type(v) not in (int,float) or not math.isfinite(v) or not 0<=v<=32768 for v in values):raise ValueError('Coordenadas inválidas.')
+            x,y,vw,vh=values
+            if not vw or not vh or x>vw or y>vh:raise ValueError('Coordenadas inválidas.')
+            def begin(_):
+                if window_size_locked() or chrome['transition']:return {'applied':False}
+                resize_state['enabled']=False
+                width,height=window.get_size();ox,oy=window.get_window().get_root_coords(0,0)
+                if chrome['hidden'] and chrome['geometry'] and not chrome.get('resize_origin'):
+                    chrome['resize_origin']={'size':(width,height),'root':(ox,oy)}
+                window.begin_resize_drag(getattr(Gdk.WindowEdge,names[edge]),1,round(ox+x*width/vw),round(oy+y*height/vh),Gdk.CURRENT_TIME)
+                return {'applied':True}
+            return dispatch_to_gtk(begin,None)
         def open_external(data):
             uri=data.get('uri')
             if not isinstance(uri,str) or not is_allowed_external_uri(uri):raise ValueError('Link externo inválido.')
@@ -260,7 +283,7 @@ def main():
                 except (OSError,ValueError):pass
             return False
         window.connect('delete-event',save_last_playback)
-        server.ui_actions={'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'auto-controls':set_auto_controls,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}
+        server.ui_actions={'fit-player':fit_player,'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'auto-controls':set_auto_controls,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}
         def policy(view,decision,kind):
             if kind==WebKit2.PolicyDecisionType.NEW_WINDOW_ACTION:
                 # Never treat a popup requested inside the cross-origin player
@@ -297,6 +320,11 @@ def main():
                 if not chrome['shortcut_down']:
                     chrome['shortcut_down']=True
                     view.run_javascript('window.orbitzToggleControls && window.orbitzToggleControls();',None,None,None)
+                return True
+            if Gdk.keyval_to_lower(event.keyval)==Gdk.KEY_t and modifiers==Gdk.ModifierType.CONTROL_MASK:
+                pressed=chrome.setdefault('media_keys',set())
+                if Gdk.KEY_t not in pressed:
+                    pressed.add(Gdk.KEY_t);view.run_javascript('window.orbitzFitPlayer && window.orbitzFitPlayer();',None,None,None)
                 return True
             shortcuts={Gdk.KEY_space:('playpause',None),Gdk.KEY_m:('mute',None)}
             if modifiers==Gdk.ModifierType.CONTROL_MASK and Gdk.keyval_to_lower(event.keyval) in shortcuts:

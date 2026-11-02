@@ -67,7 +67,7 @@ const shortcut=(extra={})=>{let prevented=false;listeners.keydown({key:'h',ctrlK
  nativeFails=true;shortcut();await flush();assert(!classes.has('controls-hidden'),'native-action failure restores usable chrome');
  assert.match(html,/body\.controls-hidden>header,body\.controls-hidden>footer\{display:none\}/);
  assert(!/body\.controls-hidden>#screen\{[^}]*height:100vh/.test(html),'hidden controls must never stretch the player to the full old viewport');
- assert.match(html,/body\.controls-hidden>#runner\{margin:0;flex:0 0 auto;min-height:0\}/);
+ assert.match(html,/body\.controls-hidden>#runner\{margin:0;flex:1;min-height:0\}/);
  assert.match(html,/id="controls-shortcut"[\s\S]*?<kbd>Ctrl\+H<\/kbd>/);
  for(const [locale,label]of [['pt-BR','Mostrar/ocultar controles'],['en-US','Show/hide controls']]){
   const catalog=JSON.parse(fs.readFileSync('i18n/'+locale+'.json','utf8'));assert.equal(catalog['youtube.toggle_controls'],label);assert(catalog['youtube.settings_menu']);

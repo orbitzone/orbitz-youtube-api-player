@@ -20,7 +20,7 @@ class YouTubeWindowSizingTests(unittest.TestCase):
         self.assertIn('0<length<=4096', source)
         self.assertIn("self.headers.get('Origin')!=origin", source)
         self.assertIn("if not isinstance(data,dict)", source)
-        self.assertIn("server.ui_actions={'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'auto-controls':set_auto_controls,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}", widget)
+        self.assertIn("server.ui_actions={'fit-player':fit_player,'new-window':lambda _data:dispatch_to_gtk(lambda _:create_window(app),None),'media-state':media_update,'library-transfer':transfer_library,'diagnostics':get_diagnostics,'auto-controls':set_auto_controls,'always-above':set_always_above,'window-state':set_window_state,'open-external':open_external,'copy-link':copy_youtube_link}", widget)
         self.assertIn('completed.wait(timeout)', widget)
 
     def test_flatpak_manifest_exposes_only_the_required_audio_socket(self):
@@ -92,7 +92,7 @@ class YouTubeWindowSizingTests(unittest.TestCase):
     def test_web_layout_stretches_idle_runner_and_grows_only_for_player(self):
         html = (YOUTUBE_DIR / 'index.html').read_text()
         self.assertIn('body{min-height:0;height:100%;display:flex;flex-direction:column;overflow:hidden}', html)
-        self.assertIn('#screen{aspect-ratio:auto;height:clamp(220px,calc(100vh - 110px),2000px)', html)
+        self.assertIn('#screen{aspect-ratio:auto;flex:1;min-height:0;height:auto}', html)
         self.assertIn('#results button{align-items:center;min-height:80px}', html)
         self.assertIn("function windowLayoutState(){if(!$('config').hidden&&$('discovery').hidden&&$('screen').hidden)return 'settings';return $('discovery').hidden?($('screen').hidden?'idle':'player'):'panel'}", html)
         self.assertIn("api('window-state',{state:windowLayoutState()}).catch(()=>{})", html)

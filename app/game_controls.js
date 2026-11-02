@@ -5,7 +5,7 @@ const paused={runner:false,maze:false,invaders:false,asteroids:false,breaker:fal
 const panel=$('runner'),overlay=document.createElement('div');overlay.id='game-pause';overlay.hidden=true;overlay.setAttribute('role','status');overlay.setAttribute('aria-live','polite');panel.append(overlay);
 const style=document.createElement('style');style.textContent='#game-pause{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:#080d1877;color:#ffe6a3;font-weight:700;text-align:center;padding:24px;pointer-events:none;z-index:1}#game-pause[hidden]{display:none}';document.head.append(style);
 const mode=()=>['maze','invaders','asteroids','breaker','lander'].includes(window.orbitzGameMode)?window.orbitzGameMode:'runner';
-window.orbitzGamePaused=()=>paused[mode()];
+window.orbitzGamePaused=()=>paused[mode()]||Boolean(window.orbitzResizeActive?.());
 window.orbitzSyncGamePause=()=>{
  const value=paused[mode()];panel.classList.toggle('game-paused',value);overlay.hidden=window.orbitzGamesHome||!value;overlay.textContent=uiTr('youtube.game_paused');
 };
