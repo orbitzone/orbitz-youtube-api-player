@@ -1,4 +1,4 @@
-# YouTube API Player — By Orbitz
+# YouTube API Player
 
 ### Your video, right where you want it.
 
