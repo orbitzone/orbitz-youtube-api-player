@@ -12,6 +12,16 @@ Keep a live stream beside your work. Listen to a podcast while planning your day
 
 > **Beta 0.2.0-beta.1:** a local package is available for testing. This beta has not yet been published on GitHub Releases or Flathub. See the [release notes](docs/releases/0.2.0-beta.1.md) for features and current limitations. Supporting documentation is currently in Portuguese.
 
+## Watch the app in action
+
+[![Watch the 58-second English demo](docs/media/orbitz-demo-en-cover.jpg)](https://github.com/orbitzone/orbitz-youtube-api-player/raw/refs/heads/main/docs/media/orbitz-demo-en.mp4)
+
+[▶ Watch the English demo · 58 seconds](https://github.com/orbitzone/orbitz-youtube-api-player/raw/refs/heads/main/docs/media/orbitz-demo-en.mp4)
+
+Open source. Free to use. Yours to explore.
+
+Music: “Cipher” by Kevin MacLeod ([incompetech.com](https://incompetech.com/music/royalty-free/index.html?isrc=USUAN1100844)), licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Excerpt edited, faded and mixed.
+
 ## Turn your player into a desktop widget
 
 Use a compact window to keep up with what matters while you use your computer. A news broadcast, your favorite radio stream, or a reference video can stay in view, wherever you choose.
